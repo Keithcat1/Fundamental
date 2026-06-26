@@ -772,18 +772,18 @@ input:-webkit-autofill { /* Chrome related pain */
     transition-property: background-color;
 }
 
-.researchesDiv > label {
+.researchesDiv > .upgradeBtn {
     display: flex;
     transition-property: background-color;
 }
 
-.researchesDiv input {
+.researchesDiv .upgradeBtn img {
     border-radius: 3px;
     z-index: 2;
     transition-property: background-color;
 }
 
-.researchesDiv label > span {
+.researchesDiv .upgradeBtn > span:not(.upgInfo) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -799,10 +799,51 @@ input:-webkit-autofill { /* Chrome related pain */
     transition-property: background-color;
 }
 
-.researchesDiv label > span.noMaxLevel {
+.researchesDiv .upgradeBtn > span.noMaxLevel {
     padding-left: calc(3px + 0.4em);
     padding-right: 0.4em;
     min-width: 2.3em;
+}
+
+.upgradeBtn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: 15rem;
+    min-width: 38px;
+    height: auto;
+    padding: 2px;
+    background-color: var(--background-color);
+    border: 2px solid var(--button-border);
+    cursor: pointer;
+}
+
+.upgradeBtn .upgInfo {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.7em;
+    line-height: 1.1;
+    word-break: break-word;
+    pointer-events: none;
+}
+
+.upgradeBtn .upgName {
+    font-weight: bold;
+    display: block;
+}
+
+.upgradeBtn .upgOwned {
+    color: var(--green-text);
+    display: block;
+}
+
+.upgradeBtn .upgEffect {
+    display: block;
+}
+
+.upgradeBtn .upgCost {
+    color: var(--yellow-text);
+    display: block;
 }
 
 .descriptionTextMain {
@@ -849,9 +890,11 @@ input:-webkit-autofill { /* Chrome related pain */
     margin-bottom: -0.6em;
 }
 
-#elementsGrid > input {
-    width: 38px;
-    height: 38px;
+#elementsGrid > .upgradeBtn {
+    width: auto;
+    min-width: 38px;
+    height: auto;
+    min-height: 38px;
     border-radius: 0;
 }
 
@@ -970,7 +1013,7 @@ input.elementType3.created, .elementType3.awaiting:hover { background: #0000c1; 
     row-gap: 0.5em;
 }
 
-#milestones > div {
+#milestones > .upgradeBtn {
     display: flex;
     justify-content: center;
     border-bottom: 2px solid;
@@ -979,7 +1022,7 @@ input.elementType3.created, .elementType3.awaiting:hover { background: #0000c1; 
     flex-grow: 1;
 }
 
-#milestones input {
+#milestones .upgradeBtn img {
     cursor: help;
     border-radius: 3px;
 }
@@ -1622,4 +1665,48 @@ li .hollowButton {
 @supports not selector(::-webkit-scrollbar) {
     html { scrollbar-color: gray black; } /* Custom variables are ignored here */
     body { scrollbar-color: var(--input-border) black; }
+}
+
+.upgradeBtn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: 15rem;
+    min-width: 38px;
+    height: auto;
+    padding: 2px;
+    background-color: var(--background-color);
+    border: 2px solid var(--button-border);
+    cursor: pointer;
+}
+
+.upgradeBtn .upgInfo {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.7em;
+    line-height: 1.1;
+    word-break: break-word;
+    pointer-events: none;
+}
+
+.upgradeBtn .upgName {
+    font-weight: bold;
+    display: block;
+}
+
+.upgradeBtn .upgEffect {
+    display: block;
+}
+
+.upgradeBtn .upgCost {
+    color: var(--yellow-text);
+    display: block;
+}
+
+#elementsGrid > .upgradeBtn {
+    width: auto;
+    min-width: 38px;
+    height: auto;
+    min-height: 38px;
+    border-radius: 0;
 }

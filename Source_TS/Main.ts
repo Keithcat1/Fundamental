@@ -1,5 +1,5 @@
 import { player, global, updatePlayer, prepareVacuum, fillMissingValues, vacuumStart } from './Player';
-import { getUpgradeDescription, switchTab, numbersUpdate, visualUpdate, format, getChallengeDescription, stageUpdate, updateCollapsePoints, getChallengeRewards } from './Update';
+import { switchTab, numbersUpdate, visualUpdate, format, getChallengeDescription, stageUpdate, updateCollapsePoints, getChallengeRewards } from './Update';
 import { assignBuildingsProduction, buyBuilding, buyStrangeness, buyStrangenessMax, buyUpgrades, buyVerse, calculateTreeCost, collapseResetUser, dischargeResetUser, endResetUser, enterExitChallengeUser, inflationRefund, mergeResetUser, nucleationResetUser, rankResetUser, setActiveStage, stageResetUser, switchStage, timeUpdate, toggleChallengeType, vaporizationResetUser } from './Stage';
 import { Alert, Prompt, setTheme, changeFontSize, changeFormat, specialHTML, replayEvent, Confirm, preventImageUnload, Notify, MDStrangenessPage, globalSave, toggleSpecial, saveGlobalSettings, openHotkeys, openVersionInfo, errorNotify, enableApril, enableLightness, resetMinSizes } from './Special';
 import { assignHotkeys, buyAll, createAll, detectHotkey, detectShift, handleTouchHotkeys, hotkeys, offlineWarp, strangenessAll, toggleAll, toggleShift } from './Hotkeys';
@@ -449,29 +449,9 @@ const showAndFix = (element: HTMLElement) => {
     }
 };
 
-const hoverUpgrades = (index: number, type: 'upgrades' | 'researches' | 'researchesExtra' | 'researchesAuto' | 'ASR' | 'elements') => {
-    if (type === 'elements') {
-        global.lastElement = index;
-    } else {
-        if ((type === 'upgrades' || type === 'researches' || type === 'researchesExtra') && global[`${type}Info`][player.stage.active].maxActive <= index) { return; }
-        global.lastUpgrade[player.stage.active] = [index, type];
-    }
-    getUpgradeDescription(type);
-};
-const hoverStrangeness = (index: number, stageIndex: number, type: 'strangeness' | 'milestones' | 'inflation') => {
-    if (type === 'inflation') {
-        global.lastInflation = [index, stageIndex];
-    } else if (type === 'strangeness') {
-        global.lastStrangeness = [index, stageIndex];
-    } else { global.lastMilestone = [index, stageIndex]; }
-    getUpgradeDescription(type);
-};
-const hoverChallenge = (index: number) => {
-    global.lastChallenge[0] = index;
-    getChallengeDescription();
-    getChallengeRewards();
-    visualUpdate();
-};
+
+
+
 /** Creates X automatization Research or switches Stage to from which that Research auto can be created if done from wrong Stage */
 const handleAutoResearchCreation = (index: number) => {
     if (player.researchesAuto[index] >= global.researchesAutoInfo.max[index]) { return; }
@@ -1174,8 +1154,8 @@ try { //Start everything
     getId('exitFooter').addEventListener('click', () => enterExitChallengeUser(null));
     for (let i = 0; i < global.challengesInfo.length; i++) {
         const image = getId(`challenge${i + 1}`);
-        if (!MD) { image.addEventListener('mouseenter', () => hoverChallenge(i)); }
-        image.addEventListener('click', () => { global.lastChallenge[0] === i ? enterExitChallengeUser(i) : hoverChallenge(i); });
+
+        image.addEventListener('click', () => { enterExitChallengeUser(i); });
     }
     getId('challengeName').addEventListener('click', () => {
         if (global.lastChallenge[0] === 0) {
@@ -1218,165 +1198,70 @@ try { //Start everything
         };
         image.addEventListener('mouseenter', clickFunc);
         if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                clickFunc();
-            });
-        }
-    }
-
-    /* Upgrade tab */
-    for (let i = 0; i < specialHTML.lastUpgrade; i++) {
-        const image = getId(`upgrade${i + 1}`);
-        const hoverFunc = () => hoverUpgrades(i, 'upgrades');
-        const clickFunc = () => buyUpgrades(i, player.stage.active, 'upgrades');
-        if (PC) {
-            image.addEventListener('mouseenter', () => {
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
-        }
-        if (MD) {
-            image.addEventListener('touchstart', () => {
-                hoverFunc();
-                if (player.toggles.hover[0]) {
-                    clickFunc();
-                    repeatFunction(clickFunc);
-                }
-            });
-        } else {
-            image.addEventListener('click', clickFunc);
-            image.addEventListener('mousedown', () => repeatFunction(clickFunc));
-        }
-        if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
+            image.addEventListener('focus', () => { if (global.hotkeys.tab && player.toggles.hover[0]) { clickFunc(); } });
         }
     }
     for (let i = 0; i < specialHTML.lastResearch; i++) {
         const label = getId(`research${i + 1}`);
         const image = getQuery(`#research${i + 1} > input`);
-        const hoverFunc = () => hoverUpgrades(i, 'researches');
+
         const clickFunc = () => buyUpgrades(i, player.stage.active, 'researches');
         if (PC) {
-            label.addEventListener('mouseenter', hoverFunc);
-            image.addEventListener('mouseenter', () => {
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
-        }
-        if (MD) {
-            label.addEventListener('touchstart', () => {
-                hoverFunc();
-                if (player.toggles.hover[0]) {
-                    clickFunc();
-                    repeatFunction(clickFunc);
-                }
-            });
+
+            image.addEventListener('mouseenter', () => { if (player.toggles.hover[0]) { clickFunc(); } });
         } else {
             label.addEventListener('mousedown', () => repeatFunction(clickFunc));
             image.addEventListener('click', clickFunc);
         }
         if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
+            image.addEventListener('focus', () => { if (global.hotkeys.tab && player.toggles.hover[0]) { clickFunc(); } });
         }
     }
     for (let i = 0; i < specialHTML.lastResearchExtra; i++) {
         const label = getId(`researchExtra${i + 1}`);
         const image = getQuery(`#researchExtra${i + 1} > input`);
-        const hoverFunc = () => hoverUpgrades(i, 'researchesExtra');
+
         const clickFunc = () => buyUpgrades(i, player.stage.active, 'researchesExtra');
         if (PC) {
-            label.addEventListener('mouseenter', hoverFunc);
-            image.addEventListener('mouseenter', () => {
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
-        }
-        if (MD) {
-            label.addEventListener('touchstart', () => {
-                hoverFunc();
-                if (player.toggles.hover[0]) {
-                    clickFunc();
-                    repeatFunction(clickFunc);
-                }
-            });
+
+            image.addEventListener('mouseenter', () => { if (player.toggles.hover[0]) { clickFunc(); } });
         } else {
             label.addEventListener('mousedown', () => repeatFunction(clickFunc));
             image.addEventListener('click', clickFunc);
         }
         if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
+            image.addEventListener('focus', () => { if (global.hotkeys.tab && player.toggles.hover[0]) { clickFunc(); } });
         }
     }
     for (let i = 0; i < playerStart.researchesAuto.length; i++) {
         const label = getId(`researchAuto${i + 1}`);
         const image = getQuery(`#researchAuto${i + 1} > input`);
-        const hoverFunc = () => hoverUpgrades(i, 'researchesAuto');
+
         const clickFunc = () => handleAutoResearchCreation(i);
         if (PC) {
-            label.addEventListener('mouseenter', hoverFunc);
-            image.addEventListener('mouseenter', () => {
-                if (player.toggles.hover[0]) { buyUpgrades(i, player.stage.active, 'researchesAuto'); }
-            });
-        }
-        if (MD) {
-            label.addEventListener('touchstart', () => {
-                hoverFunc();
-                if (player.toggles.hover[0]) {
-                    clickFunc();
-                    repeatFunction(clickFunc);
-                }
-            });
+
+            image.addEventListener('mouseenter', () => { if (player.toggles.hover[0]) { clickFunc(); } });
         } else {
             label.addEventListener('mousedown', () => repeatFunction(clickFunc));
             image.addEventListener('click', clickFunc);
         }
         if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { buyUpgrades(i, player.stage.active, 'researchesAuto'); }
-            });
+            image.addEventListener('focus', () => { if (global.hotkeys.tab && player.toggles.hover[0]) { clickFunc(); } });
         }
     } {
         const label = getId('ASR');
         const image = getQuery('#ASR > input');
-        const hoverFunc = () => hoverUpgrades(0, 'ASR');
+
         const clickFunc = () => buyUpgrades(0, player.stage.active, 'ASR');
         if (PC) {
-            label.addEventListener('mouseenter', hoverFunc);
-            image.addEventListener('mouseenter', () => {
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
-        }
-        if (MD) {
-            label.addEventListener('touchstart', () => {
-                hoverFunc();
-                if (player.toggles.hover[0]) {
-                    clickFunc();
-                    repeatFunction(clickFunc);
-                }
-            });
+
+            image.addEventListener('mouseenter', () => { if (player.toggles.hover[0]) { clickFunc(); } });
         } else {
             label.addEventListener('mousedown', () => repeatFunction(clickFunc));
             image.addEventListener('click', clickFunc);
         }
         if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
+            image.addEventListener('focus', () => { if (global.hotkeys.tab && player.toggles.hover[0]) { clickFunc(); } });
         }
     }
     if (MD) {
@@ -1411,7 +1296,6 @@ try { //Start everything
         const button = getId('element0');
         const dblclickFunc = () => {
             global.lastElement = 0;
-            getUpgradeDescription('elements');
         };
         if (SR) {
             getId('element1').addEventListener('keydown', (event) => {
@@ -1443,88 +1327,36 @@ try { //Start everything
     for (let i = 1; i < playerStart.elements.length; i++) {
         const image = getId(`element${i}`);
         const clickFunc = () => buyUpgrades(i, 4, 'elements');
-        const hoverFunc = () => hoverUpgrades(i, 'elements');
+
         if (PC) {
-            image.addEventListener('mouseenter', () => {
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
+            image.addEventListener('mouseenter', () => { if (player.toggles.hover[0]) { clickFunc(); } });
             image.addEventListener('mousedown', () => repeatFunction(clickFunc));
         }
         if (MD) {
-            image.addEventListener('touchstart', () => {
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-                repeatFunction(clickFunc);
-            });
+            image.addEventListener('touchstart', () => { if (player.toggles.hover[0]) { clickFunc(); repeatFunction(clickFunc); } });
         } else { image.addEventListener('click', clickFunc); }
         if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
+            image.addEventListener('focus', () => { if (global.hotkeys.tab && player.toggles.hover[0]) { clickFunc(); } });
         }
     }
 
     /* Strangeness tab */
-    for (let i = 0; i < playerStart.strange.length; i++) {
-        const button = getId(`strange${i}`);
-        const open = (focus = false) => {
-            if (player.progress.main < 15 && player.milestones[4][0] < 8) { return; }
-            const html = getId(`strange${i}EffectsMain`);
-            if (html.dataset.focus === 'true') { return; }
-            const button = getId(`strange${i}`);
-            if (focus) {
-                html.dataset.focus = 'true';
-                button.addEventListener('blur', () => {
-                    html.style.display = 'none';
-                    html.dataset.focus = '';
-                }, { once: true });
-            } else {
-                button.addEventListener('mouseleave', () => {
-                    if (html.dataset.focus === 'true') { return; }
-                    html.style.display = 'none';
-                }, { once: true });
-            }
-            html.style.display = '';
-            numbersUpdate();
-            visualUpdate();
-        };
-        button.addEventListener('mouseenter', () => open());
-        if (SR) { button.addEventListener('focus', () => open(true)); }
-    }
     for (let s = 1; s < playerStart.strangeness.length; s++) {
         if (MD) { getId(`strangenessPage${s}`).addEventListener('click', () => MDStrangenessPage(s)); }
         for (let i = 0; i < playerStart.strangeness[s].length; i++) {
             const label = getId(`strange${i + 1}Stage${s}`);
             const image = getQuery(`#strange${i + 1}Stage${s} > input`);
-            const hoverFunc = () => hoverStrangeness(i, s, 'strangeness');
+
             const clickFunc = () => buyStrangenessMax(i, s, 'strangeness');
             if (PC) {
-                label.addEventListener('mouseenter', hoverFunc);
-                image.addEventListener('mouseenter', () => {
-                    if (player.toggles.hover[1]) { clickFunc(); }
-                });
-            }
-            if (MD) {
-                label.addEventListener('touchstart', () => {
-                    hoverFunc();
-                    if (player.toggles.hover[1]) {
-                        clickFunc();
-                        repeatFunction(clickFunc);
-                    }
-                });
+
+                image.addEventListener('mouseenter', () => { if (player.toggles.hover[0]) { clickFunc(); } });
             } else {
                 label.addEventListener('mousedown', () => repeatFunction(clickFunc));
                 image.addEventListener('click', clickFunc);
             }
             if (PC || SR) {
-                image.addEventListener('focus', () => {
-                    if (!global.hotkeys.tab) { return; }
-                    hoverFunc();
-                    if (player.toggles.hover[1]) { clickFunc(); }
-                });
+                image.addEventListener('focus', () => { if (global.hotkeys.tab && player.toggles.hover[0]) { clickFunc(); } });
             }
         }
     }
@@ -1552,14 +1384,11 @@ try { //Start everything
     for (let s = 1; s < playerStart.milestones.length; s++) {
         for (let i = 0; i < playerStart.milestones[s].length; i++) {
             const image = getQuery(`#milestone${i + 1}Stage${s}Div > input`);
-            const hoverFunc = () => hoverStrangeness(i, s, 'milestones');
-            if (PC) { image.addEventListener('mouseenter', hoverFunc); }
-            if (MD) { image.addEventListener('touchstart', hoverFunc); }
+
+            if (PC) {  }
+            if (MD) {  }
             if (PC || SR) {
-                image.addEventListener('focus', () => {
-                    if (!global.hotkeys.tab) { return; }
-                    hoverFunc();
-                });
+                image.addEventListener('focus', () => { if (global.hotkeys.tab && player.toggles.hover[0]) { clickFunc(); } });
             }
         }
     }
@@ -1569,32 +1398,17 @@ try { //Start everything
         for (let i = 0; i < playerStart.tree[s].length; i++) {
             const label = getId(`inflation${i + 1}Tree${s + 1}`);
             const image = getQuery(`#inflation${i + 1}Tree${s + 1} > input`);
-            const hoverFunc = () => hoverStrangeness(i, s, 'inflation');
+
             const clickFunc = () => buyStrangenessMax(i, s, 'inflation');
             if (PC) {
-                label.addEventListener('mouseenter', hoverFunc);
-                image.addEventListener('mouseenter', () => {
-                    if (player.toggles.hover[2]) { clickFunc(); }
-                });
-            }
-            if (MD) {
-                label.addEventListener('touchstart', () => {
-                    hoverFunc();
-                    if (player.toggles.hover[2]) {
-                        clickFunc();
-                        repeatFunction(clickFunc);
-                    }
-                });
+
+                image.addEventListener('mouseenter', () => { if (player.toggles.hover[0]) { clickFunc(); } });
             } else {
                 label.addEventListener('mousedown', () => repeatFunction(clickFunc));
                 image.addEventListener('click', clickFunc);
             }
             if (PC || SR) {
-                image.addEventListener('focus', () => {
-                    if (!global.hotkeys.tab) { return; }
-                    hoverFunc();
-                    if (player.toggles.hover[2]) { clickFunc(); }
-                });
+                image.addEventListener('focus', () => { if (global.hotkeys.tab && player.toggles.hover[0]) { clickFunc(); } });
             }
         }
     } {
