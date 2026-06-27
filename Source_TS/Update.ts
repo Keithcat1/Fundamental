@@ -932,10 +932,13 @@ export const visualUpdate = (ignoreOffline = false) => {
                 specialHTML.lastUpgrade = upgradesInfo.maxActive;
                 const upgradeHTML = specialHTML.upgradeHTML[active];
                 for (let i = 0; i < specialHTML.lastUpgrade; i++) {
-                    const image = getId(`upgrade${i + 1}`) as HTMLInputElement;
-                    if (showU.includes(i)) { image.style.display = ''; }
-                    image.src = `Used_art/${upgradeHTML[i]}`;
-                    image.alt = upgradesInfo.name[i];
+                    const button = getId(`upgrade${i + 1}`);
+                    if (showU.includes(i)) { button.style.display = ''; }
+                    const img = button.querySelector('img') as HTMLImageElement;
+                    if (img) {
+                        img.src = `Used_art/${upgradeHTML[i]}`;
+                        img.alt = upgradesInfo.name[i];
+                    }
                 }
 
                 specialHTML.lastResearch = researchesInfo.maxActive;
@@ -1907,6 +1910,34 @@ const visualUpdateUpgrades = (index: number, stageIndex: number, type: 'upgrades
             image.tabIndex = globalSave.SRSettings[0] && globalSave.SRSettings[1] ? 0 : -1;
         } else { image.tabIndex = 0; }
         image.style.backgroundColor = color;
+
+        // Update inline upgrade details for screen readers and visible text
+        const pointer = global[`${type}Info`][stageIndex];
+        const name = pointer.name[index];
+        const notEnoughUniverses = stageIndex === 5 && global.mergeInfo.unlockU[index] > calculateEffects.trueUniverses();
+        const effect = notEnoughUniverses && global.mergeInfo.unlockU[index] > player.progress.universes[player.inflation.vacuum ? 1 : 0] ? 'Effect will be revealed once requirements are met.' : pointer.effectText[index]();
+        
+        const cost = player.upgrades[stageIndex][index] === 1 ? 'Created.' :
+            stageIndex === 1 && player.upgrades[1][5] !== 1 && ((index === 3 || index === 4) && player.buildings[1][(player.inflation.vacuum ? 4 : 2) + (index === 3 ? 0 : 1)].total.equal(0)) ? `Requires any amount of ${index === 3 ? 'Atoms' : 'Molecules'} to create.` :
+            stageIndex === 2 && index === 0 && player.buildings[2][1].true < 1 && player.buildings[2][2].true < 1 ? 'Requires any amount of self-made Drops to create.' :
+            stageIndex === 4 && global.collapseInfo.unlockU[index] > player.collapse.mass && player.researchesExtra[5][0] < 1 ? `Unlocked at ${format(global.collapseInfo.unlockU[index])} Mass.` :
+            notEnoughUniverses ? `Unlocked at ${global.mergeInfo.unlockU[index]} ${universeName()} Universes.` :
+            `${format(pointer.cost[index])} ${global.stageInfo.costName[stageIndex]}.`;
+
+        const nameSpan = image.querySelector('.upgradeName');
+        const costSpan = image.querySelector('.upgradeCost');
+        const effectSpan = image.querySelector('.upgradeEffect');
+
+        if (nameSpan && costSpan && effectSpan) {
+            nameSpan.textContent = name;
+            effectSpan.textContent = effect;
+            if (player.upgrades[stageIndex][index] === 1) {
+                // Already purchased; since no string parsing is required, remove the cost from the description
+                costSpan.textContent = '';
+            } else {
+                costSpan.textContent = cost;
+            }
+        }
     } else if (type === 'elements') {
         const image = getId(`element${index}`);
         if (player.elements[index] >= 1) {
