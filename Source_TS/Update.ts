@@ -1447,7 +1447,7 @@ export const visualProgressUnlocks = () => {
     (getId('voidRewardsHead') as HTMLButtonElement).disabled = highest < 20;
     (getId('stabilityRewardsHead') as HTMLButtonElement).disabled = highest < 24;
     getId('researchAuto3').style.display = highest >= 19 ? '' : 'none';
-    getId('toggleHover0').style.display = highest >= 3 ? '' : 'none';
+//    getId('toggleHover0').style.display = highest >= 3 ? '' : 'none';
     getId('toggleMax0').style.display = highest >= 7 ? '' : 'none';
     getId('strangenessVisibility').style.display = highest >= 19 ? '' : 'none';
     for (let s = 2; s <= 4; s++) {
@@ -2003,12 +2003,59 @@ const visualUpdateResearches = (index: number, stageIndex: number, type: 'resear
     if (assignInnerHTML(mainHTML, text)) {
         mainHTML.classList[max < 1e3 ? 'remove' : 'add']('noMaxLevel');
 
-        if (type !== 'researches' && type !== 'researchesExtra') { return; }
-        const digits = Math.floor(Math.log10(Math.max(level, 1))) + Math.floor(Math.log10(Math.max(max, 1)));
-        if (specialHTML.cache.innerHTML.get(textPointer) < digits) {
-            specialHTML.cache.innerHTML.set(textPointer, digits);
-            mainHTML.style.minWidth = `${mainHTML.getBoundingClientRect().width}px`;
+        if (type === 'researches' || type === 'researchesExtra') {
+            const digits = Math.floor(Math.log10(Math.max(level, 1))) + Math.floor(Math.log10(Math.max(max, 1)));
+            if (specialHTML.cache.innerHTML.get(textPointer) < digits) {
+                specialHTML.cache.innerHTML.set(textPointer, digits);
+                mainHTML.style.minWidth = `${mainHTML.getBoundingClientRect().width}px`;
+            }
         }
+    }
+
+    // Update inline upgrade details (name/cost/effect) for researches in the upgrades tab
+    if (type === 'strangeness' || type === 'inflation') { return; }
+    const nameSpan = getQuery(`${textPointer} > .upgradeInfo > .upgradeName`) as HTMLElement | null;
+    const costSpan = getQuery(`${textPointer} > .upgradeInfo > .upgradeCost`) as HTMLElement | null;
+    const effectSpan = getQuery(`${textPointer} > .upgradeInfo > .upgradeEffect`) as HTMLElement | null;
+    if (!nameSpan || !costSpan || !effectSpan) { return; }
+
+    if (type === 'researches' || type === 'researchesExtra') {
+        const pointer = global[`${type}Info`][stageIndex];
+        if (type === 'researchesExtra' && stageIndex === 4 && index === 0) { pointer.name[0] = ['Nova', 'Supernova', 'Hypernova'][Math.min(level, 2)]; }
+        const notEnoughUniverses = stageIndex === 5 && global.mergeInfo[`unlock${type === 'researches' ? 'R' : 'E'}`][index] > calculateEffects.trueUniverses();
+
+        nameSpan.textContent = `${pointer.name[index]} (${format(level)}/${format(pointer.max[index])})`;
+        effectSpan.textContent = notEnoughUniverses && global.mergeInfo[`unlock${type === 'researches' ? 'R' : 'E'}`][index] > player.progress.universes[player.inflation.vacuum ? 1 : 0] ? 'Effect will be revealed once requirements are met.' : pointer.effectText[index]();
+
+        if (level >= pointer.max[index]) {
+            costSpan.textContent = 'Maxed.';
+        } else if (stageIndex === 4 && type === 'researches' && global.collapseInfo.unlockR[index] > player.collapse.mass && player.researchesExtra[5][0] < 1) {
+            costSpan.textContent = `Unlocked at ${format(global.collapseInfo.unlockR[index])} Mass.`;
+        } else if (stageIndex === 5 && type === 'researchesExtra' && player.strangeness[5][3] < 1) {
+            costSpan.textContent = "Requires 'Gravitational bound' Strangeness.";
+        } else if (notEnoughUniverses) {
+            costSpan.textContent = `Unlocked at ${global.mergeInfo[`unlock${type === 'researches' ? 'R' : 'E'}`][index]} ${universeName()} Universes.`;
+        } else {
+            costSpan.textContent = `${format(pointer.cost[index])} ${stageIndex === 6 && type === 'researchesExtra' ? `${global.april.light ? 'Light' : 'Dark'} energy` : global.stageInfo.costName[stageIndex]}.`;
+        }
+    } else if (type === 'researchesAuto') {
+        const pointer = global.researchesAutoInfo;
+        nameSpan.textContent = `${pointer.name[index]} (${level}/${pointer.max[index]})`;
+        effectSpan.textContent = pointer.effectText[index]();
+        if (level >= pointer.max[index]) {
+            costSpan.textContent = 'Maxed.';
+        } else {
+            const autoStage = pointer.autoStage[index][level];
+            costSpan.textContent = `${format(pointer.costRange[index][Math.max(level, 0)])} ${global.stageInfo.costName[autoStage]}.`;
+        }
+    } else if (type === 'ASR') {
+        const pointer = global.ASRInfo;
+        nameSpan.textContent = `${pointer.name} (${level}/${pointer.max[stageIndex]})`;
+        effectSpan.textContent = pointer.effectText();
+        costSpan.textContent = level >= pointer.max[stageIndex] ? 'Maxed.' :
+            stageIndex === 1 && player.upgrades[1][5] !== 1 ? "Cannot be created without 'Superposition' Upgrade." :
+            stageIndex === 3 && player.accretion.rank < 1 ? "Cannot be created at 'Ocean world' Rank." :
+            `${format(pointer.costRange[stageIndex][level])} ${global.stageInfo.costName[stageIndex]}.`;
     }
 };
 

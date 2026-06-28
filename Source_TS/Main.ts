@@ -384,9 +384,9 @@ export const toggleSwap = (number: number, type: 'buildings' | 'verses' | 'norma
         toggleHTML = getId(`toggle${type === 'buildings' ? 'Building' : 'Verse'}${number}`);
         extraText = 'Auto ';
         if (change) { visualUpdate(); }
-    } else if (type === 'hover') {
-        toggleHTML = getId(`toggleHover${number}`);
-        extraText = 'Hover to create ';
+//    } else if (type === 'hover') {
+//        toggleHTML = getId(`toggleHover${number}`);
+//        extraText = 'Hover to create ';
     } else if (type === 'max') {
         toggleHTML = getId(`toggleMax${number}`);
         extraText = 'Max create ';
@@ -1011,9 +1011,9 @@ try { //Start everything
     for (let i = 0; i < playerStart.toggles.confirm.length; i++) {
         getId(`toggleConfirm${i}`).addEventListener('click', () => toggleConfirm(i, true));
     }
-    for (let i = 0; i < playerStart.toggles.hover.length; i++) {
-        getId(`toggleHover${i}`).addEventListener('click', () => toggleSwap(i, 'hover', true));
-    }
+//    for (let i = 0; i < playerStart.toggles.hover.length; i++) {
+//        getId(`toggleHover${i}`).addEventListener('click', () => toggleSwap(i, 'hover', true));
+//    }
     for (let i = 0; i < playerStart.toggles.max.length; i++) {
         getId(`toggleMax${i}`).addEventListener('click', () => toggleSwap(i, 'max', true));
     }
