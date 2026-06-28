@@ -1461,7 +1461,7 @@ export const buyUpgrades = (upgrade: number, stageIndex: number, type: 'upgrades
         assignUpgradeCost(upgrade, stageIndex, type);
         if (!auto) {
             global.automatization[type === 'researches' ? 'autoR' : 'autoE'][stageIndex] = [];
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `Level increased ${level[upgrade] >= pointer.max[upgrade] ? 'and maxed at' : 'to'} ${format(level[upgrade])} for the '${pointer.name[upgrade]}' ${type === 'researches' ? 'Stage' : specialHTML.researchExtraDivHTML[player.stage.active]} Research`; }
+            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `Level increased ${level[upgrade] >= pointer.max[upgrade] ? 'and maxed at' : 'to'} ${format(level[upgrade])} for the '${pointer.name[upgrade]}'`; }
         }
     } else if (type === 'researchesAuto' || type === 'ASR') {
         if (type === 'ASR') { upgrade = stageIndex; }
