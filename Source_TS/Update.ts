@@ -1907,7 +1907,6 @@ const visualUpdateUpgrades = (index: number, stageIndex: number, type: 'upgrades
             } else if (stageIndex === 6) {
                 color = '#660000'; //Darker maroon
             }
-            image.tabIndex = globalSave.SRSettings[0] && globalSave.SRSettings[1] ? 0 : -1;
         } else { image.tabIndex = 0; }
         image.style.backgroundColor = color;
 
@@ -1940,14 +1939,27 @@ const visualUpdateUpgrades = (index: number, stageIndex: number, type: 'upgrades
         }
     } else if (type === 'elements') {
         const image = getId(`element${index}`);
+        const pointer = global.elementsInfo;
+
+        const elementText = `${pointer.name[index]}.`;
+        const elementEffect = player.elements[index] > 0 || (player.progress.element[player.inflation.vacuum ? 1 : 0] >= index && index !== 0) ? pointer.effectText[index]() : 'Effect is not yet known.';
+                const elementCost = player.elements[index] >= 1 ? 'Obtained.' :
+            player.elements[index] > 0 ? 'Awaiting Collapse.' :
+            index === 0 ? 'Unknown.' : `${format(pointer.cost[index])} Stardust.${globalSave.MDSettings[0] ? ' (Hold to create)' : ''}`;
+
+        image.innerHTML = `${elementText}
+        
+        ${elementCost}
+        ${elementEffect}`;
+            player.elements[index] > 0 ? 'Awaiting Collapse.' :
+            index === 0 ? 'Unknown.' : `${format(pointer.cost[index])} Stardust.${globalSave.MDSettings[0] ? ' (Hold to create)' : ''}`;
+
         if (player.elements[index] >= 1) {
             image.classList.remove('awaiting');
             image.classList.add('created');
-            if (index > 0) { image.tabIndex = globalSave.SRSettings[0] && globalSave.SRSettings[1] ? 0 : -1; }
         } else {
             image.classList[player.elements[index] > 0 ? 'add' : 'remove']('awaiting');
             image.classList.remove('created');
-            if (index > 0) { image.tabIndex = 0; }
         }
     }
 };

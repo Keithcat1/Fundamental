@@ -860,6 +860,27 @@ input:-webkit-autofill { /* Chrome related pain */
     min-width: 2.3em;
 }
 
+.researchesDiv label > .upgradeInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.1em;
+    padding: 0.2em 0.5em;
+    border: 2px solid;
+    border-color: inherit;
+    border-left: none;
+    background-color: var(--background-color);
+    margin-left: -3px;
+    font-size: 0.82em;
+    min-height: 32px;
+    pointer-events: none;
+    transition-property: background-color;
+}
+
+.researchesDiv label > span:has(+ .upgradeInfo) {
+    border-right: none;
+}
+
 .descriptionTextMain {
     display: flex;
     flex-direction: column;
