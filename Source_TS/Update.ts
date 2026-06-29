@@ -432,10 +432,9 @@ export const numbersUpdate = (ignoreOffline = false) => {
             visualUpdateResearches(0, active, 'ASR');
             //getUpgradeDescription(global.lastUpgrade[active][1]);
         } else if (subtab === 'Elements') {
-            /*
             for (let i = 0; i < global.elementsInfo.name.length; i++) { visualUpdateUpgrades(i, 4, 'elements'); }
-            if (global.lastElement !== 0) { getUpgradeDescription('elements'); }
-            */
+//            if (global.lastElement !== 0) { getUpgradeDescription('elements'); }
+
         }
     } else if (tab === 'strangeness') {
         if (subtab === 'Matter') {
