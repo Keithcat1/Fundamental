@@ -1672,11 +1672,6 @@ export const prepareVacuum = (state: boolean) => { //Must not use direct player 
         strangenessInfo[s].scaling = cloneArray(info[`strangenessS${s as 1}Scale`]);
     }
 
-    const milestone1S1 = getQuery('#milestone1Stage1Div > input') as HTMLImageElement;
-    const milestone1S2 = getQuery('#milestone1Stage2Div > input') as HTMLImageElement;
-    const milestone2S2 = getQuery('#milestone2Stage2Div > input') as HTMLImageElement;
-    const milestone1S3 = getQuery('#milestone1Stage3Div > input') as HTMLImageElement;
-    const milestone2S4 = getQuery('#milestone2Stage4Div > input') as HTMLImageElement;
     if (state) {
         specialHTML.footerStatsHTML[1][0] = ['Energy%20mass.png', 'stage1borderImage cyanText', 'Mass'];
         buildingsInfo.hoverText[2][0] = upgradesInfo[1].name[8];
@@ -1700,18 +1695,12 @@ export const prepareVacuum = (state: boolean) => { //Must not use direct player 
         }
 
         getId('milestonesExtra').innerHTML = 'Requires <span class="darkvioletText">Void Milestones</span> Inflation to be active to enable effects';
-        milestone1S1.src = 'Used_art/Preon.png';
         global.milestonesInfo[2].name[0] = 'Just a bigger Puddle';
-        getQuery('#milestone1Stage2Main > span').textContent = 'Just a bigger Puddle';
-        milestone1S2.alt = 'Just a bigger Puddle';
+
         global.milestonesInfo[2].name[1] = 'Distant Clouds';
-        getQuery('#milestone2Stage2Main > span').textContent = 'Distant Clouds';
-        milestone2S2.src = 'Used_art/Clouds.png';
-        milestone2S2.alt = 'Distant Clouds';
-        milestone1S3.alt = 'Center of gravity';
+        //milestone2S2.alt = 'Distant Clouds';
+        //milestone1S3.alt = 'Center of gravity';
         global.milestonesInfo[3].name[0] = 'Center of gravity';
-        getQuery('#milestone1Stage3Main > span').textContent = 'Center of gravity';
-        milestone2S4.src = 'Used_art/Black%20hole.png';
         getQuery('#stageHistory > h3').textContent = 'Stage resets:';
 
         getQuery('#stageRewardNew > span:last-of-type').textContent = global.strangeInfo.name[0];
@@ -1782,18 +1771,15 @@ export const prepareVacuum = (state: boolean) => { //Must not use direct player 
             strangenessInfo[s].maxActive = strangenessInfo[s].scalingType.length;
         }
         getId('milestonesExtra').innerHTML = 'Completing any tier will award 1 <span class="greenText">Strange quark</span>';
-        milestone1S1.src = 'Used_art/Quarks.png';
         global.milestonesInfo[2].name[0] = 'A Nebula of Drops';
         getQuery('#milestone1Stage2Main > span').textContent = 'A Nebula of Drops';
-        milestone1S2.alt = 'A Nebula of Drops';
+        //milestone1S2.alt = 'A Nebula of Drops';
         global.milestonesInfo[2].name[1] = 'Just a bigger Puddle';
         getQuery('#milestone2Stage2Main > span').textContent = 'Just a bigger Puddle';
-        milestone2S2.src = 'Used_art/Puddle.png';
-        milestone2S2.alt = 'Just a bigger Puddle';
-        milestone1S3.alt = 'Cluster of Mass';
+        //milestone2S2.alt = 'Just a bigger Puddle';
+        //milestone1S3.alt = 'Cluster of Mass';
         global.milestonesInfo[3].name[0] = 'Cluster of Mass';
         getQuery('#milestone1Stage3Main > span').textContent = 'Cluster of Mass';
-        milestone2S4.src = 'Used_art/Main_sequence%20mass.png';
         assignInnerHTML('#mergeFalse', 'Attempt to <span class="darkvioletText">Merge</span> <span class="grayText">Galaxies</span> together, which will result in <span class="orchidText">Vacuum</span> decaying into its true state');
         getQuery('#stageHistory > h3').textContent = 'Interstellar Stage resets:';
 

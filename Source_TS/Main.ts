@@ -1548,7 +1548,7 @@ try { //Start everything
         getId('strangenessVisibility').textContent = `Permanent ones are ${global.sessionToggles[1] ? 'shown' : 'hidden'}`;
         visualUpdate();
     });
-
+    /*
     for (let s = 1; s < playerStart.milestones.length; s++) {
         for (let i = 0; i < playerStart.milestones[s].length; i++) {
             const image = getQuery(`#milestone${i + 1}Stage${s}Div > input`);
@@ -1563,7 +1563,7 @@ try { //Start everything
             }
         }
     }
-
+    */
     /* Inflation tab */
     for (let s = 0; s <= 1; s++) {
         for (let i = 0; i < playerStart.tree[s].length; i++) {

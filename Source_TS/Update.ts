@@ -1631,45 +1631,28 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
             getId('strangenessCost').textContent = `${format(cost)} Strange quarks.${newLevel - level > 1 ? ` [x${newLevel - level}]` : ''}`;
         }
     } else if (type === 'milestones') {
-        const index = global.lastMilestone[0];
-        const stageText = getId('milestonesStage');
-        const multilineID = getId('milestonesMultiline');
-        if (index === null) {
-            stageText.textContent = '';
-            getId('milestonesText').textContent = 'Hover to see.';
-            assignInnerHTML(multilineID, `<p class="orchidText">Requirement: <span class="greenText">Hover to see.</span></p>
-            <p class="blueText">Time limit: <span class="greenText">Hover to see.</span></p>
-            <p class="darkvioletText">${player.inflation.vacuum ? 'Effect' : 'Unlock'}: <span class="greenText">Hover to see.</span></p>`);
-            return;
-        }
-        const stageIndex = global.lastMilestone[1];
-        const pointer = global.milestonesInfo[stageIndex];
-        const level = player.milestones[stageIndex][index];
+        const stageIndex = player.stage.active;
+        for(var index = 0; index <= 1; index ++) {
+            const pointer = global.milestonesInfo[stageIndex];
+            const level = player.milestones[stageIndex][index];
+            let text;
+            const stageText = `${global.stageInfo.word[stageIndex]}. `;
+            const milestoneText  = `${pointer.name[index]}. (Tier ${format(level, { padding: 'exponent' })}${player.inflation.vacuum ? '' : ` out of ${pointer.scaling[index].length}`}${pointer.recent[index] !== 0 ? `, +${format(pointer.recent[index], { padding: 'exponent' })} recently` : ''})`;
+            if (player.inflation.vacuum) {
+                const isActive = player.challenges.active === 0 && player.tree[0][4] >= 1;
+                text = `<p class="orchidText">Requirement: <span class="greenText">${pointer.needText[index]()}</span></p>
+                <p class="blueText">Time limit: <span class="greenText">${format(global.challengesInfo[0].time - (isActive ? player.time[player.toggles.supervoid ? 'vacuum' : 'stage'] : 0), { type: 'time' })} ${isActive ? 'remains ' : ''}to increase this tier within Void.</span></p>
+                <p class="darkvioletText">Effect: <span class="greenText">${pointer.rewardText[index]()}</span>${player.tree[0][4] < 1 ? ' <span class="redText">(Disabled)</span>' : ''}</p>`;
+            } else if (level < pointer.scaling[index].length) {
+                const isActive = global.stageInfo.activeAll.includes(Math.min(stageIndex, 4));
+                const timeLimit = isActive && (player.tree[0][4] < 1 || player.challenges.active === 1);
+                text = `<p class="orchidText">Requirement: <span class="greenText">${pointer.needText[index]()}</span></p>
+                <p class="blueText">Time limit: <span class="greenText">${format(pointer.reward[index] - (timeLimit ? player.time.stage : 0), { type: 'time' })} ${timeLimit ? 'remains ' : ''}to complete this tier within ${isActive ? 'current' : global.stageInfo.word[index === 0 && stageIndex === 5 ? 4 : stageIndex]} Stage.</span></p>
+                <p class="darkvioletText">Unlock: <span class="greenText">${player.progress.main >= 15 ? `${pointer.rewardText[index]()}\nUnlocked` : 'Main reward will be unlocked'} after ${pointer.scaling[index].length - level} more completions.</span></p>`;
+            } else { text = `<p class="darkvioletText">Reward: <span class="greenText">${pointer.rewardText[index]()}</span></p>`; }
+            console.log(text);
+            getId(`milestone${index+1}Stage${stageIndex}Div`).innerHTML = `${stageText}<br>${milestoneText}${text === null ? "" : `<br>${text}` }`;
 
-        let text;
-        stageText.style.color = `var(--${global.stageInfo.textColor[stageIndex]}-text)`;
-        stageText.textContent = `${global.stageInfo.word[stageIndex]}. `;
-        getId('milestonesText').textContent = `${pointer.name[index]}. (Tier ${format(level, { padding: 'exponent' })}${player.inflation.vacuum ? '' : ` out of ${pointer.scaling[index].length}`}${pointer.recent[index] !== 0 ? `, +${format(pointer.recent[index], { padding: 'exponent' })} recently` : ''})`;
-        if (player.inflation.vacuum) {
-            const isActive = player.challenges.active === 0 && player.tree[0][4] >= 1;
-            text = `<p class="orchidText">Requirement: <span class="greenText">${pointer.needText[index]()}</span></p>
-            <p class="blueText">Time limit: <span class="greenText">${format(global.challengesInfo[0].time - (isActive ? player.time[player.toggles.supervoid ? 'vacuum' : 'stage'] : 0), { type: 'time' })} ${isActive ? 'remains ' : ''}to increase this tier within Void.</span></p>
-            <p class="darkvioletText">Effect: <span class="greenText">${pointer.rewardText[index]()}</span>${player.tree[0][4] < 1 ? ' <span class="redText">(Disabled)</span>' : ''}</p>`;
-        } else if (level < pointer.scaling[index].length) {
-            const isActive = global.stageInfo.activeAll.includes(Math.min(stageIndex, 4));
-            const timeLimit = isActive && (player.tree[0][4] < 1 || player.challenges.active === 1);
-            text = `<p class="orchidText">Requirement: <span class="greenText">${pointer.needText[index]()}</span></p>
-            <p class="blueText">Time limit: <span class="greenText">${format(pointer.reward[index] - (timeLimit ? player.time.stage : 0), { type: 'time' })} ${timeLimit ? 'remains ' : ''}to complete this tier within ${isActive ? 'current' : global.stageInfo.word[index === 0 && stageIndex === 5 ? 4 : stageIndex]} Stage.</span></p>
-            <p class="darkvioletText">Unlock: <span class="greenText">${player.progress.main >= 15 ? `${pointer.rewardText[index]()}\nUnlocked` : 'Main reward will be unlocked'} after ${pointer.scaling[index].length - level} more completions.</span></p>`;
-        } else { text = `<p class="darkvioletText">Reward: <span class="greenText">${pointer.rewardText[index]()}</span></p>`; }
-
-        if (assignInnerHTML(multilineID, text)) {
-            const container = multilineID.parentElement as HTMLElement;
-            const heightTest = container.getBoundingClientRect().height;
-            if (specialHTML.cache.innerHTML.get(container) < heightTest) {
-                specialHTML.cache.innerHTML.set(container, heightTest);
-                container.style.minHeight = `${heightTest}px`;
-            }
         }
     } else if (type === 'elements') {
         const index = global.lastElement;
