@@ -1498,14 +1498,11 @@ try { //Start everything
         if (MD) { getId(`strangenessPage${s}`).addEventListener('click', () => MDStrangenessPage(s)); }
         for (let i = 0; i < playerStart.strangeness[s].length; i++) {
             const label = getId(`strange${i + 1}Stage${s}`);
-            const image = getQuery(`#strange${i + 1}Stage${s} > input`);
+ //           const image = getQuery(`#strange${i + 1}Stage${s} > input`);
             const hoverFunc = () => hoverStrangeness(i, s, 'strangeness');
             const clickFunc = () => buyStrangenessMax(i, s, 'strangeness');
             if (PC) {
                 label.addEventListener('mouseenter', hoverFunc);
-                image.addEventListener('mouseenter', () => {
-                    if (player.toggles.hover[1]) { clickFunc(); }
-                });
             }
             if (MD) {
                 label.addEventListener('touchstart', () => {
@@ -1517,14 +1514,7 @@ try { //Start everything
                 });
             } else {
                 label.addEventListener('mousedown', () => repeatFunction(clickFunc));
-                image.addEventListener('click', clickFunc);
-            }
-            if (PC || SR) {
-                image.addEventListener('focus', () => {
-                    if (!global.hotkeys.tab) { return; }
-                    hoverFunc();
-                    if (player.toggles.hover[1]) { clickFunc(); }
-                });
+                label.addEventListener('click', clickFunc);
             }
         }
     }

@@ -870,9 +870,6 @@ export const resetMinSizes = (full = true) => {
     }
 
     if (!full) { return; }
-    const mile = getId('milestonesMultiline').parentElement as HTMLElement;
-    specialHTML.cache.innerHTML.set(mile, 0);
-    mile.style.minHeight = '';
 };
 
 export const changeFontSize = (initial = false) => {
@@ -942,7 +939,6 @@ export const enableApril = (firstLoad = false) => {
     }
     global.strangenessInfo[4].name[8] = active ? 'Antineutronium' : 'Neutronium';
     global.challengesInfo[0].rewardText[0][4][2] = `'${global.strangenessInfo[4].name[8]}' (Interstellar)`;
-    (getQuery('#strange9Stage4 > input') as HTMLInputElement).alt = global.strangenessInfo[4].name[8];
 
     if (firstLoad) { return; }
     if (!active) {

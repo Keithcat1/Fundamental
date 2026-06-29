@@ -430,10 +430,12 @@ export const numbersUpdate = (ignoreOffline = false) => {
             for (let i = 0; i < global.researchesExtraInfo[active].maxActive; i++) { visualUpdateResearches(i, active, 'researchesExtra'); }
             for (let i = 0; i < global.researchesAutoInfo.name.length; i++) { visualUpdateResearches(i, 0, 'researchesAuto'); }
             visualUpdateResearches(0, active, 'ASR');
-            getUpgradeDescription(global.lastUpgrade[active][1]);
+            //getUpgradeDescription(global.lastUpgrade[active][1]);
         } else if (subtab === 'Elements') {
+            /*
             for (let i = 0; i < global.elementsInfo.name.length; i++) { visualUpdateUpgrades(i, 4, 'elements'); }
             if (global.lastElement !== 0) { getUpgradeDescription('elements'); }
+            */
         }
     } else if (tab === 'strangeness') {
         if (subtab === 'Matter') {
@@ -467,9 +469,11 @@ export const numbersUpdate = (ignoreOffline = false) => {
                 getId('strange0Effect4Stat').textContent = format(strangeness[4][7] >= 1 ? stageBoost[4] : 1, { padding: true });
                 getId('strange0Effect5Stat').textContent = format(strangeness[5][7] >= 1 ? stageBoost[5] : 1, { padding: true });
             }
+            /*
             for (let s = 1; s < global.strangenessInfo.length; s++) {
                 for (let i = 0; i < global.strangenessInfo[s].maxActive; i++) { visualUpdateResearches(i, s, 'strangeness'); }
             }
+                */
             getUpgradeDescription('strangeness');
         } else if (subtab === 'Milestones') {
             const time = player.time[challenge === 0 && player.toggles.supervoid ? 'vacuum' : 'stage'];
@@ -1596,63 +1600,67 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
             getId('inflationCost').textContent = `${cost === 0 ? 'None' : `${format(cost)} ${stageIndex === 0 ? 'Inflatons' : 'Cosmons'}`}${stageIndex !== 0 ? ', non-refundable' : ''}.${newLevel - level > 1 ? ` [x${newLevel - level}]` : ''}`;
         }
     } else if (type === 'strangeness') {
-        const index = global.lastStrangeness[0];
-        const stageText = getId('strangenessStage');
-        if (index === null) {
-            stageText.textContent = '';
-            getId('strangenessText').textContent = 'Hover to see.';
-            getId('strangenessEffect').textContent = 'Hover to see.';
-            getId('strangenessCost').textContent = 'Strange quarks.';
-            return;
-        }
-        const stageIndex = global.lastStrangeness[1];
-        const pointer = global.strangenessInfo[stageIndex];
-        const level = player.strangeness[stageIndex][index];
-
-        stageText.style.color = `var(--${global.stageInfo.textColor[stageIndex]}-text)`;
-        stageText.textContent = `${global.stageInfo.word[stageIndex]}. `;
-        getId('strangenessText').textContent = `${pointer.name[index]}. (Level ${format(level)} out of ${format(pointer.max[index])})`;
-        getId('strangenessEffect').textContent = pointer.effectText[index]();
-        if (level >= pointer.max[index]) {
-            getId('strangenessCost').textContent = 'Maxed.';
-        } else if (player.challenges.active === 1 && stageIndex < 4 && player.milestones[stageIndex][1] >= (stageIndex === 1 ? 6 : 7)) {
-            getId('strangenessCost').textContent = `${global.stageInfo.word[stageIndex]} is removed from the reset cycle.`;
-        } else {
-            let newLevel = 1 + level;
-            let cost = pointer.cost[index];
-            if (player.toggles.max[1] !== global.hotkeys.shift) {
-                while (pointer.max[index] > newLevel) {
-                    const check = cost + calculateStrangenessCost(index, stageIndex, newLevel);
-                    if (player.strange[0].current < check) { break; }
-                    cost = check;
-                    newLevel++;
-                }
+        for(var stageIndex = 1; stageIndex <= 4; stageIndex ++) {
+            const unlocked = player.progress.main >= stageIndex + 10;
+            if(!unlocked) {
+                break;
             }
-            getId('strangenessCost').textContent = `${format(cost)} Strange quarks.${newLevel - level > 1 ? ` [x${newLevel - level}]` : ''}`;
+
+            for(var index=0; index<global.strangenessInfo[stageIndex].cost.length; index ++) {
+                const pointer = global.strangenessInfo[stageIndex];
+                const level = player.strangeness[stageIndex][index];
+
+                //const stageText = `${global.stageInfo.word[stageIndex]}. `;
+                const strangenessText = `${pointer.name[index]}. (Level ${format(level)} out of ${format(pointer.max[index])})`;
+                const strangenessEffect = pointer.effectText[index]();
+                let strangenessCost;
+                if (level >= pointer.max[index]) {
+                    strangenessCost = 'Maxed.';
+                } else if (player.challenges.active === 1 && stageIndex < 4 && player.milestones[stageIndex][1] >= (stageIndex === 1 ? 6 : 7)) {
+                    strangenessCost = `${global.stageInfo.word[stageIndex]} is removed from the reset cycle.`;
+                } else {
+                    let newLevel = 1 + level;
+                    let cost = pointer.cost[index];
+                    if (player.toggles.max[1] !== global.hotkeys.shift) {
+                        while (pointer.max[index] > newLevel) {
+                            const check = cost + calculateStrangenessCost(index, stageIndex, newLevel);
+                            if (player.strange[0].current < check) { break; }
+                            cost = check;
+                            newLevel++;
+                        }
+                    }
+                    strangenessCost = `${format(cost)} Strange quarks.${newLevel - level > 1 ? ` [x${newLevel - level}]` : ''}`;
+                }
+                getId(`strange${index+1}Stage${stageIndex}`).innerHTML = `${strangenessText}<br>${strangenessEffect}<br>${strangenessCost}`;
+            }
         }
     } else if (type === 'milestones') {
-        const stageIndex = player.stage.active;
-        for(var index = 0; index <= 1; index ++) {
-            const pointer = global.milestonesInfo[stageIndex];
-            const level = player.milestones[stageIndex][index];
-            let text;
-            const stageText = `${global.stageInfo.word[stageIndex]}. `;
-            const milestoneText  = `${pointer.name[index]}. (Tier ${format(level, { padding: 'exponent' })}${player.inflation.vacuum ? '' : ` out of ${pointer.scaling[index].length}`}${pointer.recent[index] !== 0 ? `, +${format(pointer.recent[index], { padding: 'exponent' })} recently` : ''})`;
-            if (player.inflation.vacuum) {
-                const isActive = player.challenges.active === 0 && player.tree[0][4] >= 1;
-                text = `<p class="orchidText">Requirement: <span class="greenText">${pointer.needText[index]()}</span></p>
-                <p class="blueText">Time limit: <span class="greenText">${format(global.challengesInfo[0].time - (isActive ? player.time[player.toggles.supervoid ? 'vacuum' : 'stage'] : 0), { type: 'time' })} ${isActive ? 'remains ' : ''}to increase this tier within Void.</span></p>
-                <p class="darkvioletText">Effect: <span class="greenText">${pointer.rewardText[index]()}</span>${player.tree[0][4] < 1 ? ' <span class="redText">(Disabled)</span>' : ''}</p>`;
-            } else if (level < pointer.scaling[index].length) {
-                const isActive = global.stageInfo.activeAll.includes(Math.min(stageIndex, 4));
-                const timeLimit = isActive && (player.tree[0][4] < 1 || player.challenges.active === 1);
-                text = `<p class="orchidText">Requirement: <span class="greenText">${pointer.needText[index]()}</span></p>
-                <p class="blueText">Time limit: <span class="greenText">${format(pointer.reward[index] - (timeLimit ? player.time.stage : 0), { type: 'time' })} ${timeLimit ? 'remains ' : ''}to complete this tier within ${isActive ? 'current' : global.stageInfo.word[index === 0 && stageIndex === 5 ? 4 : stageIndex]} Stage.</span></p>
-                <p class="darkvioletText">Unlock: <span class="greenText">${player.progress.main >= 15 ? `${pointer.rewardText[index]()}\nUnlocked` : 'Main reward will be unlocked'} after ${pointer.scaling[index].length - level} more completions.</span></p>`;
-            } else { text = `<p class="darkvioletText">Reward: <span class="greenText">${pointer.rewardText[index]()}</span></p>`; }
-            console.log(text);
-            getId(`milestone${index+1}Stage${stageIndex}Div`).innerHTML = `${stageText}<br>${milestoneText}${text === null ? "" : `<br>${text}` }`;
+        for(var stageIndex = 1; stageIndex <= 4; stageIndex++) {
+            const unlocked = player.progress.main >= stageIndex + 10;
+            if(!unlocked) {
+                break;
+            }
 
+            for(var index = 0; index <= 1; index ++) {
+                const pointer = global.milestonesInfo[stageIndex];
+                const level = player.milestones[stageIndex][index];
+                let text;
+                const stageText = `${global.stageInfo.word[stageIndex]}. `;
+                const milestoneText  = `${pointer.name[index]}. (Tier ${format(level, { padding: 'exponent' })}${player.inflation.vacuum ? '' : ` out of ${pointer.scaling[index].length}`}${pointer.recent[index] !== 0 ? `, +${format(pointer.recent[index], { padding: 'exponent' })} recently` : ''})`;
+                if (player.inflation.vacuum) {
+                    const isActive = player.challenges.active === 0 && player.tree[0][4] >= 1;
+                    text = `<p class="orchidText">Requirement: <span class="greenText">${pointer.needText[index]()}</span></p>
+                    <p class="blueText">Time limit: <span class="greenText">${format(global.challengesInfo[0].time - (isActive ? player.time[player.toggles.supervoid ? 'vacuum' : 'stage'] : 0), { type: 'time' })} ${isActive ? 'remains ' : ''}to increase this tier within Void.</span></p>
+                    <p class="darkvioletText">Effect: <span class="greenText">${pointer.rewardText[index]()}</span>${player.tree[0][4] < 1 ? ' <span class="redText">(Disabled)</span>' : ''}</p>`;
+                } else if (level < pointer.scaling[index].length) {
+                    const isActive = global.stageInfo.activeAll.includes(Math.min(stageIndex, 4));
+                    const timeLimit = isActive && (player.tree[0][4] < 1 || player.challenges.active === 1);
+                    text = `<p class="orchidText">Requirement: <span class="greenText">${pointer.needText[index]()}</span></p>
+                    <p class="blueText">Time limit: <span class="greenText">${format(pointer.reward[index] - (timeLimit ? player.time.stage : 0), { type: 'time' })} ${timeLimit ? 'remains ' : ''}to complete this tier within ${isActive ? 'current' : global.stageInfo.word[index === 0 && stageIndex === 5 ? 4 : stageIndex]} Stage.</span></p>
+                    <p class="darkvioletText">Unlock: <span class="greenText">${player.progress.main >= 15 ? `${pointer.rewardText[index]()}\nUnlocked` : 'Main reward will be unlocked'} after ${pointer.scaling[index].length - level} more completions.</span></p>`;
+                } else { text = `<p class="darkvioletText">Reward: <span class="greenText">${pointer.rewardText[index]()}</span></p>`; }
+                getId(`milestone${index+1}Stage${stageIndex}Div`).innerHTML = `${milestoneText}${text === null ? "" : `<br>${text}` }`;
+            }
         }
     } else if (type === 'elements') {
         const index = global.lastElement;
@@ -1890,7 +1898,7 @@ const visualUpdateUpgrades = (index: number, stageIndex: number, type: 'upgrades
             } else if (stageIndex === 6) {
                 color = '#660000'; //Darker maroon
             }
-        } else { image.tabIndex = 0; }
+        }
         image.style.backgroundColor = color;
 
         // Update inline upgrade details for screen readers and visible text
@@ -1983,13 +1991,10 @@ const visualUpdateResearches = (index: number, stageIndex: number, type: 'resear
     let text = '<span class="';
     if (level >= max) {
         text += 'greenText';
-        getQuery(`${textPointer} > input`).tabIndex = globalSave.SRSettings[0] && globalSave.SRSettings[1] ? 0 : -1;
     } else if (level === 0) {
         text += 'redText';
-        getQuery(`${textPointer} > input`).tabIndex = 0;
     } else {
         text += 'orchidText';
-        getQuery(`${textPointer} > input`).tabIndex = 0;
     }
     text += `">${format(level, { padding: 'exponent' })}</span>`;
     if (max < 1e3) { text += `/<span class="greenText">${max}</span>`; }
