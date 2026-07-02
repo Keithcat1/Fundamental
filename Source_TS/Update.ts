@@ -1599,8 +1599,8 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
             getId('inflationCost').textContent = `${cost === 0 ? 'None' : `${format(cost)} ${stageIndex === 0 ? 'Inflatons' : 'Cosmons'}`}${stageIndex !== 0 ? ', non-refundable' : ''}.${newLevel - level > 1 ? ` [x${newLevel - level}]` : ''}`;
         }
     } else if (type === 'strangeness') {
-        for(var stageIndex = 1; stageIndex <= 4; stageIndex ++) {
-            const unlocked = player.progress.main >= stageIndex + 10;
+        for(var stageIndex = 1; stageIndex <= 5; stageIndex ++) {
+            const unlocked = stageIndex <= 4 ? player.progress.main >= stageIndex + 10 : player.milestones[4][0] >= 8;
             if(!unlocked) {
                 break;
             }
@@ -1634,12 +1634,7 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
             }
         }
     } else if (type === 'milestones') {
-        for(var stageIndex = 1; stageIndex <= 4; stageIndex++) {
-            const unlocked = player.progress.main >= stageIndex + 10;
-            if(!unlocked) {
-                break;
-            }
-
+        for(var stageIndex = 1; stageIndex <= 5; stageIndex++) {
             for(var index = 0; index <= 1; index ++) {
                 const pointer = global.milestonesInfo[stageIndex];
                 const level = player.milestones[stageIndex][index];
