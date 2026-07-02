@@ -1139,7 +1139,7 @@ export const buyBuilding = (index: number, stageIndex: number, howMany = player.
         awardMilestone(1, 5);
         if (!auto) {
             numbersUpdate();
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Caused Galaxy reset'; }
+            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Galaxies reset'; }
         }
     }
 };
@@ -1240,7 +1240,7 @@ export const buyVerse = (auto = false) => {
     player.clone = {};
     if ((player.stage.active !== 1 && player.toggles.normal[0]) || player.stage.active < 6) { setActiveStage(1); }
     resetVacuum(1);
-    if (!auto && globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Caused Universe reset'; }
+    if (!auto && globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Universe reset'; }
 };
 
 export const calculateVerseCost = (): number => {
@@ -1367,7 +1367,7 @@ export const buyUpgrades = (upgrade: number, stageIndex: number, type: 'upgrades
         } else if (stageIndex === 4 && upgrade === 1 && global.tabs.current === 'upgrade') { switchTab(); }
         if (!auto) {
             global.automatization.autoU[stageIndex] = [];
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `New Upgrade '${pointer.name[upgrade]}', has been created`; }
+            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `'${pointer.name[upgrade]}' created`; }
         }
     } else if (type === 'researches' || type === 'researchesExtra') {
         const pointer = global[`${type}Info`][stageIndex];
@@ -1461,7 +1461,7 @@ export const buyUpgrades = (upgrade: number, stageIndex: number, type: 'upgrades
         assignUpgradeCost(upgrade, stageIndex, type);
         if (!auto) {
             global.automatization[type === 'researches' ? 'autoR' : 'autoE'][stageIndex] = [];
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `Level increased ${level[upgrade] >= pointer.max[upgrade] ? 'and maxed at' : 'to'} ${format(level[upgrade])} for the '${pointer.name[upgrade]}'`; }
+            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${level[upgrade] >= pointer.max[upgrade] ? 'maxed ' : ''}${pointer.name[upgrade]} + 1 to ${format(level[upgrade])}`; }
         }
     } else if (type === 'researchesAuto' || type === 'ASR') {
         if (type === 'ASR') { upgrade = stageIndex; }
@@ -1501,7 +1501,7 @@ export const buyUpgrades = (upgrade: number, stageIndex: number, type: 'upgrades
                 }
             }
         }
-        if (!auto && globalSave.SRSettings[0]) { getId('SRMain').textContent = `Level increased ${level[upgrade] >= pointer.max[upgrade] ? 'and maxed at' : 'to'} ${format(level[upgrade])} for the '${type === 'ASR' ? pointer.name : pointer.name[upgrade]}' automatization Research`; }
+if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${level[upgrade] >= pointer.max[upgrade] ? 'maxed ' : ''}${pointer.name[upgrade]} + 1 to ${format(level[upgrade])}`; }
     } else if (type === 'elements') {
         let level = player.elements[upgrade];
         if (level >= 1) { return false; }
@@ -1541,7 +1541,7 @@ export const buyUpgrades = (upgrade: number, stageIndex: number, type: 'upgrades
                 assignMaxLevel(5, 4, 'researches', true);
             }
         }
-        if (!auto && globalSave.SRSettings[0]) { getId('SRMain').textContent = `New Element '${global.elementsInfo.name[upgrade]}' ${player.elements[upgrade] >= 1 ? 'obtained' : 'awaiting activation'}`; }
+        if (!auto && globalSave.SRSettings[0]) { getId('SRMain').textContent = `'${global.elementsInfo.name[upgrade]}' ${player.elements[upgrade] >= 1 ? 'obtained' : 'awaiting activation'}`; }
     }
 
     if (!free) {
@@ -1747,7 +1747,7 @@ export const buyStrangeness = (upgrade: number, stageIndex: number, type: 'stran
         if (player.verses[0].current < 13) { assignBuildingsProduction.strange0(); }
         if (!auto) {
             global.automatization.autoS = [];
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `Level increased ${strangeness[upgrade] >= pointer.max[upgrade] ? 'and maxed at' : 'to'} ${format(strangeness[upgrade])} for the '${pointer.name[upgrade]}' ${global.stageInfo.word[stageIndex]} Strangeness`; }
+            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${strangeness[upgrade] >= pointer.max[upgrade] ? 'maxed ' : ''}${pointer.name[upgrade]} ${format(strangeness[upgrade])} + 1 level in ${global.stageInfo.word[stageIndex]}`; }
         }
     } else if (type === 'inflation') {
         const pointer = global.treeInfo[stageIndex];
@@ -2515,7 +2515,7 @@ export const stageResetUser = async() => {
         }
     }
     stageResetReward(active);
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Caused Stage reset'; }
+    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Stage reset'; }
 };
 
 /** Requires call of stageResetCheck or assignResetInformation.quarksGain */
@@ -2724,7 +2724,7 @@ export const dischargeResetUser = async() => {
 
     dischargeReset();
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Caused Discharge reset'; }
+    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Discharged'; }
 };
 
 const dischargeReset = () => {
@@ -2785,7 +2785,7 @@ export const vaporizationResetUser = async() => {
 
     vaporizationReset();
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Caused Vaporization reset'; }
+    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Vaporized'; }
 };
 
 const vaporizationReset = (autoClouds = null as number | null) => {
@@ -2842,7 +2842,7 @@ export const rankResetUser = async() => {
     rankReset();
     numbersUpdate();
     if (player.stage.active === 3) { visualUpdate(); }
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `Increased Rank to '${global.accretionInfo.rankName[player.accretion.rank]}'`; }
+    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${global.accretionInfo.rankName[player.accretion.rank]} rank`; }
 };
 
 const rankReset = (noReset = false) => {
@@ -2974,7 +2974,7 @@ export const collapseResetUser = async() => {
 
     collapseReset();
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Caused Collapse reset'; }
+    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Collapsed'; }
 };
 
 const collapseReset = () => {

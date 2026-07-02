@@ -212,7 +212,7 @@ export const pauseGame = (pause = true) => {
         button.style.color = '';
         getId('gamePaused').style.display = 'none';
         global.paused = false;
-        if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Game unpaused'; }
+        if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Unpaused'; }
 
         global.intervalsId.autoSave = setInterval(saveGame, globalSave.intervals.autoSave);
     }
@@ -235,7 +235,7 @@ export const pauseGameUser = () => {
         global.paused = true;
         changeIntervals();
         clearInterval(global.intervalsId.autoSave);
-        if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Game paused'; }
+        if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'paused'; }
         return;
     }
     const offline = handleOfflineTime();
