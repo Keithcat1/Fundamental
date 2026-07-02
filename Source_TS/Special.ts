@@ -1798,56 +1798,56 @@ export const openHotkeys = () => {
         ${globalSave.MDSettings[0] ? `<p>Left or Right swipe ‒ <span class="whiteText">change current tab</span></p>
         <p>Diagonal Down or Up swipe ‒ <span class="whiteText">change current subtab</span></p>
         <p id="stageSwipe">Long Left or Right swipe ‒ <span class="whiteText">change current active Stage</span></p>` : ''}
-        <label id="tabRightHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">change tab to the next one</span></label>
-        <label id="tabLeftHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">change tab to the previous one</span></label>
-        <label id="subtabUpHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">change subtab to the next one</span></label>
-        <label id="subtabDownHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">change subtab to the previous one</span></label>
-        <label id="stageRightHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">change active Stage to the next one</span></label>
-        <label id="stageLeftHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">change active Stage to the previous one</span></label>
-        <label id="makeStructureHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">make a Structure</span></label>
-        <p id="makeAllHotkey"><span></span> <span class="whiteText">or</span> <label><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">make all Structures</span></label></p>
-        <label id="enterChallengeHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">enter the Challenge</span></label>
-        <p id="exitChallengeHotkey"><span></span> <span class="whiteText">or</span> <label><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">exit out of the current Challenge</span></label></p>
+        <label id="tabRightHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change tab to the next one</span></label>
+        <label id="tabLeftHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change tab to the previous one</span></label>
+        <label id="subtabUpHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change subtab to the next one</span></label>
+        <label id="subtabDownHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change subtab to the previous one</span></label>
+        <label id="stageRightHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change active Stage to the next one</span></label>
+        <label id="stageLeftHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change active Stage to the previous one</span></label>
+        <label id="makeStructureHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">make a Structure</span></label>
+        <p id="makeAllHotkey"><span></span> <span class="whiteText">or</span> <label><button class="selectBtn"></button> ‒ <span class="whiteText">make all Structures</span></label></p>
+        <label id="enterChallengeHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">enter the Challenge</span></label>
+        <p id="exitChallengeHotkey"><span></span> <span class="whiteText">or</span> <label><button class="selectBtn"></button> ‒ <span class="whiteText">exit out of the current Challenge</span></label></p>
         <div>
             <label id="createAllHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Upgrades</span></label>
-            <label id="strangenessHotkey" class="greenText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Strangeness</span></label>
-            <label id="dischargeHotkey" class="orangeText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Discharge</span></label>
-            <label id="vaporizationHotkey" class="blueText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Vaporization</span></label>
-            <label id="rankHotkey" class="darkorchidText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Rank</span></label>
-            <label id="collapseHotkey" class="orchidText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Collapse</span></label>
-            <label id="galaxyHotkey" class="grayText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Galaxy</span></label>
-            <label id="mergeHotkey" class="darkvioletText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Merge</span></label>
-            <label id="nucleationHotkey" class="orangeText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Nucleation</span></label>
-            <label id="stageHotkey" class="stageText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Stage</span></label>
-            <label id="universeHotkey" class="darkvioletText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Universe</span></label>
-            <label id="endHotkey" class="redText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">End</span></label>
-            <label id="warpHotkey" class="blueText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Warp</span></label>
-            <label id="pauseHotkey" class="grayText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">pause</span></label>
+            <label id="strangenessHotkey" class="greenText"><button class="selectBtn"></button> ‒ <span class="whiteText">Strangeness</span></label>
+            <label id="dischargeHotkey" class="orangeText"><button class="selectBtn"></button> ‒ <span class="whiteText">Discharge</span></label>
+            <label id="vaporizationHotkey" class="blueText"><button class="selectBtn"></button> ‒ <span class="whiteText">Vaporization</span></label>
+            <label id="rankHotkey" class="darkorchidText"><button class="selectBtn"></button> ‒ <span class="whiteText">Rank</span></label>
+            <label id="collapseHotkey" class="orchidText"><button class="selectBtn"></button> ‒ <span class="whiteText">Collapse</span></label>
+            <label id="galaxyHotkey" class="grayText"><button class="selectBtn"></button> ‒ <span class="whiteText">Galaxy</span></label>
+            <label id="mergeHotkey" class="darkvioletText"><button class="selectBtn"></button> ‒ <span class="whiteText">Merge</span></label>
+            <label id="nucleationHotkey" class="orangeText"><button class="selectBtn"></button> ‒ <span class="whiteText">Nucleation</span></label>
+            <label id="stageHotkey" class="stageText"><button class="selectBtn"></button> ‒ <span class="whiteText">Stage</span></label>
+            <label id="universeHotkey" class="darkvioletText"><button class="selectBtn"></button> ‒ <span class="whiteText">Universe</span></label>
+            <label id="endHotkey" class="redText"><button class="selectBtn"></button> ‒ <span class="whiteText">End</span></label>
+            <label id="warpHotkey" class="blueText"><button class="selectBtn"></button> ‒ <span class="whiteText">Warp</span></label>
+            <label id="pauseHotkey" class="grayText"><button class="selectBtn"></button> ‒ <span class="whiteText">pause</span></label>
         </div>
         <p>Enter <span class="whiteText">or</span> Space ‒ <span class="whiteText">click selected HTML Element or confirm Alert</span></p>
         <p>Escape ‒ <span class="whiteText">cancel changing the hotkey, close Alert or Notification</span></p>
         <p>Tab <span class="whiteText">and</span> Shift Tab ‒ <span class="whiteText">select another HTML Element</span></p>
         <p id="autoTogglesHeader" class="bigWord">Auto toggles</p>
-        <label id="toggleStructureHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">toggle auto Structure</span></label>
-        <p id="toggleAllHotkey"><span></span> <span class="whiteText">or</span> <label><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">toggle all auto Structures</span></label></p>
+        <label id="toggleStructureHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">toggle auto Structure</span></label>
+        <p id="toggleAllHotkey"><span></span> <span class="whiteText">or</span> <label><button class="selectBtn"></button> ‒ <span class="whiteText">toggle all auto Structures</span></label></p>
         <div>
-            <label id="toggleUpgradesHotkey"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Upgrades</span></label>
-            <label id="toggleStrangenessHotkey" class="greenText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Strangeness</span></label>
-            <label id="toggleDischargeHotkey" class="orangeText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Discharge</span></label>
-            <label id="toggleVaporizationHotkey" class="blueText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Vaporization</span></label>
-            <label id="toggleRankHotkey" class="darkorchidText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Rank</span></label>
-            <label id="toggleCollapseHotkey" class="orchidText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Collapse</span></label>
-            <label id="toggleMergeHotkey" class="darkvioletText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Merge</span></label>
-            <label id="toggleNucleationHotkey" class="orangeText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Nucleation</span></label>
-            <label id="toggleStageHotkey" class="stageText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Stage</span></label>
-            <label id="supervoidHotkey" class="darkvioletText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Void type</span></label>
-            <label id="toggleUniverseHotkey" class="darkvioletText"><button type="button" class="selectBtn"></button> ‒ <span class="whiteText">Universe</span></label>
+            <label id="toggleUpgradesHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">Upgrades</span></label>
+            <label id="toggleStrangenessHotkey" class="greenText"><button class="selectBtn"></button> ‒ <span class="whiteText">Strangeness</span></label>
+            <label id="toggleDischargeHotkey" class="orangeText"><button class="selectBtn"></button> ‒ <span class="whiteText">Discharge</span></label>
+            <label id="toggleVaporizationHotkey" class="blueText"><button class="selectBtn"></button> ‒ <span class="whiteText">Vaporization</span></label>
+            <label id="toggleRankHotkey" class="darkorchidText"><button class="selectBtn"></button> ‒ <span class="whiteText">Rank</span></label>
+            <label id="toggleCollapseHotkey" class="orchidText"><button class="selectBtn"></button> ‒ <span class="whiteText">Collapse</span></label>
+            <label id="toggleMergeHotkey" class="darkvioletText"><button class="selectBtn"></button> ‒ <span class="whiteText">Merge</span></label>
+            <label id="toggleNucleationHotkey" class="orangeText"><button class="selectBtn"></button> ‒ <span class="whiteText">Nucleation</span></label>
+            <label id="toggleStageHotkey" class="stageText"><button class="selectBtn"></button> ‒ <span class="whiteText">Stage</span></label>
+            <label id="supervoidHotkey" class="darkvioletText"><button class="selectBtn"></button> ‒ <span class="whiteText">Void type</span></label>
+            <label id="toggleUniverseHotkey" class="darkvioletText"><button class="selectBtn"></button> ‒ <span class="whiteText">Universe</span></label>
         </div>
         <p>Holding Enter on last selected button will repeatedly press it, also works with Mouse and Touch events on some buttons</p>
         <p>Shift clicking the hotkey will set it to the default value or remove it</p>
         <p>Numlock being ON can break Numpad hotkeys</p>
         <label id="hotkeysToggleLabel" title="Turn ON, if using non-QWERTY layout keyboard">Language dependant hotkeys </label>
-        <button type="button" id="restoreHotkeys" class="selectBtn">Restore default hotkeys values</button>`; //Spacebar at the end of label is required
+        <button id="restoreHotkeys" class="selectBtn">Restore default hotkeys values</button>`; //Spacebar at the end of label is required
         const toggle = getId('globalToggle0');
         getId('hotkeysToggleLabel').append(toggle);
         toggle.style.display = '';
@@ -1905,7 +1905,8 @@ export const openHotkeys = () => {
         };
         for (const key of hotkeys.main) {
             const button = getQuery(`#${key}Hotkey button`);
-            button.textContent = globalSave.hotkeys[globalSave.toggles[0] ? 0 : 1][key] ?? 'None';
+            const keyText = globalSave.hotkeys[globalSave.toggles[0] ? 0 : 1][key] ?? 'None';
+            button.ariaDescription = keyText;
             button.addEventListener('click', async(event) => {
                 const pointer = globalSave.hotkeys[globalSave.toggles[0] ? 0 : 1];
                 let assign = true;
