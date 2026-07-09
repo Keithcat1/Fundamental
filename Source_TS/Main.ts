@@ -1470,29 +1470,8 @@ try { //Start everything
     /* Strangeness tab */
     for (let i = 0; i < playerStart.strange.length; i++) {
         const button = getId(`strange${i}`);
-        const open = (focus = false) => {
-            if (player.progress.main < 15 && player.milestones[4][0] < 8) { return; }
-            const html = getId(`strange${i}EffectsMain`);
-            if (html.dataset.focus === 'true') { return; }
-            const button = getId(`strange${i}`);
-            if (focus) {
-                html.dataset.focus = 'true';
-                button.addEventListener('blur', () => {
-                    html.style.display = 'none';
-                    html.dataset.focus = '';
-                }, { once: true });
-            } else {
-                button.addEventListener('mouseleave', () => {
-                    if (html.dataset.focus === 'true') { return; }
-                    html.style.display = 'none';
-                }, { once: true });
-            }
-            html.style.display = '';
-            numbersUpdate();
-            visualUpdate();
-        };
-        button.addEventListener('mouseenter', () => open());
-        if (SR) { button.addEventListener('focus', () => open(true)); }
+//            numbersUpdate();
+//            visualUpdate();
     }
     for (let s = 1; s < playerStart.strangeness.length; s++) {
         if (MD) { getId(`strangenessPage${s}`).addEventListener('click', () => MDStrangenessPage(s)); }
