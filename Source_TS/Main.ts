@@ -1537,34 +1537,9 @@ try { //Start everything
     for (let s = 0; s <= 1; s++) {
         for (let i = 0; i < playerStart.tree[s].length; i++) {
             const label = getId(`inflation${i + 1}Tree${s + 1}`);
-            const image = getQuery(`#inflation${i + 1}Tree${s + 1} > input`);
-            const hoverFunc = () => hoverStrangeness(i, s, 'inflation');
             const clickFunc = () => buyStrangenessMax(i, s, 'inflation');
-            if (PC) {
-                label.addEventListener('mouseenter', hoverFunc);
-                image.addEventListener('mouseenter', () => {
-                    if (player.toggles.hover[2]) { clickFunc(); }
-                });
-            }
-            if (MD) {
-                label.addEventListener('touchstart', () => {
-                    hoverFunc();
-                    if (player.toggles.hover[2]) {
-                        clickFunc();
-                        repeatFunction(clickFunc);
-                    }
-                });
-            } else {
-                label.addEventListener('mousedown', () => repeatFunction(clickFunc));
-                image.addEventListener('click', clickFunc);
-            }
-            if (PC || SR) {
-                image.addEventListener('focus', () => {
-                    if (!global.hotkeys.tab) { return; }
-                    hoverFunc();
-                    if (player.toggles.hover[2]) { clickFunc(); }
-                });
-            }
+            label.addEventListener('click', clickFunc);
+
         }
     } {
         const button = getId('loadoutsName');

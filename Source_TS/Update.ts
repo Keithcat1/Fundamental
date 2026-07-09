@@ -499,7 +499,7 @@ export const numbersUpdate = (ignoreOffline = false) => {
             getId('cosmonPeak').textContent = format(player.inflation.peak[0], { type: 'income' });
             getId('cosmonPeakAt').textContent = format(player.inflation.peak[1], { type: 'time' });
             for (let s = 0; s <= 1; s++) {
-                for (let i = 0; i < global.treeInfo[s].name.length; i++) { visualUpdateResearches(i, s, 'inflation'); }
+                //for (let i = 0; i < global.treeInfo[s].name.length; i++) { visualUpdateResearches(i, s, 'inflation'); }
             }
             getUpgradeDescription('inflation');
         }
@@ -1570,33 +1570,32 @@ export const visualProgressUnlocks = () => {
 
 export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researchesExtra' | 'researchesAuto' | 'ASR' | 'elements' | 'strangeness' | 'milestones' | 'inflation') => {
     if (type === 'inflation') {
-        const index = global.lastInflation[0];
-        if (index === null) {
-            getId('inflationText').textContent = 'Hover to see.';
-            getId('inflationEffect').textContent = 'Hover to see.';
-            getId('inflationCost').textContent = 'Inflatons.';
-            return;
-        }
-        const stageIndex = global.lastInflation[1];
-        const pointer = global.treeInfo[stageIndex];
-        const level = player.tree[stageIndex][index];
+        for(let stageIndex = 0; stageIndex <= 1; stageIndex ++) {
+            for(let index = 0; index < global.treeInfo[stageIndex].name.length; index ++ ) {
+                const pointer = global.treeInfo[stageIndex];
+                const level = player.tree[stageIndex][index];
 
-        getId('inflationText').textContent = `${stageIndex === 0 && global.loadouts.open ? `#${index + 1}. ` : ''}${pointer.name[index]}. (Level ${format(level)} out of ${format(pointer.max[index])})`;
-        getId('inflationEffect').textContent = pointer.effectText[index]();
-        if (level >= pointer.max[index]) {
-            getId('inflationCost').textContent = 'Fully activated.';
-        } else {
-            let newLevel = 1 + level;
-            let cost = pointer.cost[index];
-            if (player.toggles.max[2] !== global.hotkeys.shift) {
-                while (pointer.max[index] > newLevel) {
-                    const check = cost + calculateTreeCost(index, stageIndex, newLevel);
-                    if (player.cosmon[stageIndex].current < check) { break; }
-                    cost = check;
-                    newLevel++;
+                const inflationText = `${stageIndex === 0 && global.loadouts.open ? `#${index + 1}. ` : ''}${pointer.name[index]}. (Level ${format(level)} out of ${format(pointer.max[index])})`;
+                const inflationEffect = pointer.effectText[index]();
+                let inflationCost;
+                if (level >= pointer.max[index]) {
+                    inflationCost = 'Fully activated.';
+                } else {
+                    let newLevel = 1 + level;
+                    let cost = pointer.cost[index];
+                    if (player.toggles.max[2] !== global.hotkeys.shift) {
+                        while (pointer.max[index] > newLevel) { 
+                            const check = cost + calculateTreeCost(index, stageIndex, newLevel);
+                            if (player.cosmon[stageIndex].current < check) { break; }
+                            cost = check;
+                            newLevel++;
+                        }
+                    }
+                    inflationCost = `${cost === 0 ? 'None' : `${format(cost)} ${stageIndex === 0 ? 'Inflatons' : 'Cosmons'}`}${stageIndex !== 0 ? ', non-refundable' : ''}.${newLevel - level > 1 ? ` [x${newLevel - level}]` : ''}`;
                 }
+                const html = getId(`inflation${index+1}Tree${stageIndex+1}`);
+                html.innerHTML = `${inflationText}<br>${inflationCost}<br>${inflationEffect}`;
             }
-            getId('inflationCost').textContent = `${cost === 0 ? 'None' : `${format(cost)} ${stageIndex === 0 ? 'Inflatons' : 'Cosmons'}`}${stageIndex !== 0 ? ', non-refundable' : ''}.${newLevel - level > 1 ? ` [x${newLevel - level}]` : ''}`;
         }
     } else if (type === 'strangeness') {
         for(var stageIndex = 1; stageIndex <= 6; stageIndex ++) {
@@ -1634,7 +1633,7 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
                 const pointer = global.milestonesInfo[stageIndex];
                 const level = player.milestones[stageIndex][index];
                 let text;
-                const stageText = `${global.stageInfo.word[stageIndex]}. `;
+                //const stageText = `${global.stageInfo.word[stageIndex]}. `;
                 const milestoneText  = `${pointer.name[index]}. (Tier ${format(level, { padding: 'exponent' })}${player.inflation.vacuum ? '' : ` out of ${pointer.scaling[index].length}`}${pointer.recent[index] !== 0 ? `, +${format(pointer.recent[index], { padding: 'exponent' })} recently` : ''})`;
                 if (player.inflation.vacuum) {
                     const isActive = player.challenges.active === 0 && player.tree[0][4] >= 1;
