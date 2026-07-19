@@ -393,6 +393,7 @@ export const toggleSwap = (number: number, type: 'buildings' | 'verses' | 'norma
     } else if (type === 'auto') {
         toggleHTML = getId(`toggleAuto${number}`);
         extraText = 'Auto ';
+        if (change && globalSave.SRSettings[0]) { getId('SRMain').textContent = toggles[number] ? "On" : "Off"; }
     } else {
         toggleHTML = getId(`toggleNormal${number}`);
         extraText = '';
