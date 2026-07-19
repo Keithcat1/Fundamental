@@ -1798,12 +1798,14 @@ export const openHotkeys = () => {
         ${globalSave.MDSettings[0] ? `<p>Left or Right swipe ‒ <span class="whiteText">change current tab</span></p>
         <p>Diagonal Down or Up swipe ‒ <span class="whiteText">change current subtab</span></p>
         <p id="stageSwipe">Long Left or Right swipe ‒ <span class="whiteText">change current active Stage</span></p>` : ''}
+        <h3 class="bigWord">Navigation</h3>
         <label id="tabRightHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change tab to the next one</span></label>
         <label id="tabLeftHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change tab to the previous one</span></label>
         <label id="subtabUpHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change subtab to the next one</span></label>
         <label id="subtabDownHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change subtab to the previous one</span></label>
         <label id="stageRightHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change active Stage to the next one</span></label>
         <label id="stageLeftHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">change active Stage to the previous one</span></label>
+        <h3 class="bigWord">Actions</h3>
         <label id="makeStructureHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">make a Structure</span></label>
         <p id="makeAllHotkey"><span></span> <span class="whiteText">or</span> <label><button class="selectBtn"></button> ‒ <span class="whiteText">make all Structures</span></label></p>
         <label id="enterChallengeHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">enter the Challenge</span></label>
@@ -1827,7 +1829,7 @@ export const openHotkeys = () => {
         <p>Enter <span class="whiteText">or</span> Space ‒ <span class="whiteText">click selected HTML Element or confirm Alert</span></p>
         <p>Escape ‒ <span class="whiteText">cancel changing the hotkey, close Alert or Notification</span></p>
         <p>Tab <span class="whiteText">and</span> Shift Tab ‒ <span class="whiteText">select another HTML Element</span></p>
-        <p id="autoTogglesHeader" class="bigWord">Auto toggles</p>
+        <h3 id="autoTogglesHeader" class="bigWord">Auto toggles</h3>
         <label id="toggleStructureHotkey"><button class="selectBtn"></button> ‒ <span class="whiteText">toggle auto Structure</span></label>
         <p id="toggleAllHotkey"><span></span> <span class="whiteText">or</span> <label><button class="selectBtn"></button> ‒ <span class="whiteText">toggle all auto Structures</span></label></p>
         <div>
@@ -1853,30 +1855,37 @@ export const openHotkeys = () => {
         toggle.style.display = '';
         specialHTML.styleSheet.textContent += ` #hotkeysHTML { display: flex; flex-direction: column; align-items: center; row-gap: 0.2em; }
             #hotkeysHTML > div { display: grid; grid-template-columns: 1fr 1fr 1fr; width: 100%; gap: 0.3em; }
-            #hotkeysHTML > div label { justify-self: center; width: max-content; }`;
+            #hotkeysHTML > div label { justify-self: center; width: max-content; }
+            #hotkeysHTML h3 { margin: 0.3em 0 0.1em; }`;
 
-        const changeHotkey = async(number: boolean): Promise<string | null> => {
+        const changeHotkey = async(number: boolean, actionText: string): Promise<string | null> => {
             return await new Promise((resolve) => {
-                getId('hotkeysMessage').textContent = 'Awaiting new value for the hotkey';
+                const message = getId('hotkeysMessage');
+                const awaiting = number ? `Awaiting new number hotkey for ${actionText}` : `Awaiting new hotkey for ${actionText}`;
+                message.textContent = `${awaiting}. Enter to confirm, Escape to cancel`;
                 const body = document.documentElement;
                 const control = new AbortController();
-                const finish = (keyboard = true) => {
+                let result: null | string = null;
+                const finish = (confirmed: boolean, keyboard = true) => {
                     control.abort();
-                    if (keyboard) {
+                    if (keyboard) { //Don't let the key that ended the capture trigger a game action
                         body.addEventListener('keyup', () => { global.hotkeys.disabled = false; }, { once: true });
                     } else { global.hotkeys.disabled = false; }
-                    resolve(result);
+                    resolve(confirmed ? result : null);
                 };
-                global.hotkeys.disabled = true;
-                let result: null | string = null;
-                body.addEventListener('keydown', async(event: KeyboardEvent) => {
+                global.hotkeys.disabled = true; //Blocks game hotkeys while capturing
+                body.addEventListener('keydown', (event: KeyboardEvent) => {
                     const { key, code } = event;
-                    if (code === 'Tab' || code === 'Enter' || code === 'Space') { return; }
-                    event.preventDefault();
-                    if (code === 'Escape') { return finish(); }
+                    event.preventDefault(); //Block all default actions while capturing
+                    if (code === 'Escape') { return finish(false); }
+                    if (code === 'Enter' || code === 'Space') { //Confirm the pending hotkey
+                        if (result !== null) { finish(true); }
+                        return;
+                    }
+                    if (code === 'Tab') { return; } //Keep focus where it is
                     if (key === 'Control' || key === 'Shift' || key === 'Alt') { return; }
                     if (key === 'Meta' || event.metaKey) {
-                        getId('hotkeysMessage').textContent = "Meta isn't allowed";
+                        message.textContent = "Meta isn't allowed";
                         return;
                     }
                     let prefix = event.ctrlKey ? 'Ctrl ' : '';
@@ -1886,7 +1895,7 @@ export const openHotkeys = () => {
                         if (code.includes('Digit') || code.includes('Numpad')) {
                             result = prefix + (code.includes('Numpad') ? 'Numpad' : 'Numbers');
                         } else {
-                            getId('hotkeysMessage').textContent = 'Only numbers can be used here';
+                            message.textContent = `${awaiting} (only numbers can be used here). Enter to confirm, Escape to cancel`;
                             return;
                         }
                     } else {
@@ -1896,17 +1905,25 @@ export const openHotkeys = () => {
                             result = key.length === 1 ? (globalSave.toggles[0] ? key.toUpperCase() : code.replace('Key', '')) :
                                 (globalSave.toggles[0] ? key : code).replaceAll(/([A-Z]+)/g, ' $1').trimStart();
                             result = result !== '' ? prefix + result : null;
+                            if (result === null) { return; }
                         }
                     }
-                    finish();
+                    message.textContent = `${result} ‒ press Enter to confirm, Escape to cancel, or press another key to change it`;
                 }, { signal: control.signal });
-                body.addEventListener('click', () => { finish(false); }, { signal: control.signal, capture: true });
+                body.addEventListener('click', () => { finish(false, false); }, { signal: control.signal, capture: true });
             });
+        };
+        const getActionText = (button: HTMLElement): string => button.closest('label')?.querySelector('.whiteText')?.textContent?.trim() ?? '';
+        /** Sets both visible text and accessible name (action first, then hotkey) of a hotkey button */
+        const updateHotkeyButton = (button: HTMLElement, value: string) => {
+            button.textContent = value;
+            const actionText = getActionText(button);
+            button.ariaLabel = actionText === '' ? value : `${actionText}, ${value}`;
         };
         for (const key of hotkeys.main) {
             const button = getQuery(`#${key}Hotkey button`);
-            const keyText = globalSave.hotkeys[globalSave.toggles[0] ? 0 : 1][key] ?? 'None';
-            button.ariaDescription = keyText;
+            const actionText = getActionText(button);
+            updateHotkeyButton(button, globalSave.hotkeys[globalSave.toggles[0] ? 0 : 1][key] ?? 'None');
             button.addEventListener('click', async(event) => {
                 const pointer = globalSave.hotkeys[globalSave.toggles[0] ? 0 : 1];
                 let assign = true;
@@ -1921,23 +1938,29 @@ export const openHotkeys = () => {
                     if (newHotkey === undefined) { return; }
                 } else {
                     button.style.borderBottomStyle = 'dashed';
-                    newHotkey = await changeHotkey(false);
+                    newHotkey = await changeHotkey(false, actionText);
                     button.style.borderBottomStyle = '';
-                    getId('hotkeysMessage').textContent = 'Highlighted hotkeys can be modified';
-                    if (newHotkey === null) { return; }
+                    button.focus();
+                    if (newHotkey === null) {
+                        getId('hotkeysMessage').textContent = 'Highlighted hotkeys can be modified';
+                        return;
+                    }
                 }
                 const removed = hotkeys.active[newHotkey] as hotkeysList;
                 if (removed !== undefined) {
                     delete pointer[removed];
-                    getQuery(`#${removed}Hotkey button`).textContent = 'None';
+                    updateHotkeyButton(getQuery(`#${removed}Hotkey button`), 'None');
                 }
                 if (assign) {
-                    button.textContent = newHotkey;
+                    updateHotkeyButton(button, newHotkey);
                     pointer[key] = newHotkey;
                 }
 
                 assignHotkeys();
                 saveGlobalSettings();
+                let message = assign ? `Set hotkey for ${actionText} to ${newHotkey}` : `Removed hotkey from ${actionText}`;
+                if (removed !== undefined && removed !== key) { message += `, removed from ${getActionText(getQuery(`#${removed}Hotkey button`))}`; }
+                getId('hotkeysMessage').textContent = message;
             });
         }
         /** Actual type is Record<numbersList, string> */
@@ -1948,8 +1971,9 @@ export const openHotkeys = () => {
         };
         for (const key of hotkeys.numbers) {
             const button = getQuery(`#${key}Hotkey button`);
+            const actionText = getActionText(button);
             const value = globalSave.numbers[key] ?? 'None';
-            button.textContent = value;
+            updateHotkeyButton(button, value);
             getQuery(`#${extraHotkeyName[key]}Hotkey span`).textContent = value.replace('Numbers', '0').replace('Numpad', 'Num 0');
             button.addEventListener('click', async(event) => {
                 let assign = true;
@@ -1964,38 +1988,45 @@ export const openHotkeys = () => {
                     if (newHotkey === undefined) { return; }
                 } else {
                     button.style.borderBottomStyle = 'dashed';
-                    newHotkey = await changeHotkey(true);
+                    newHotkey = await changeHotkey(true, actionText);
                     button.style.borderBottomStyle = '';
-                    getId('hotkeysMessage').textContent = 'Highlighted hotkeys can be modified';
-                    if (newHotkey === null) { return; }
+                    button.focus();
+                    if (newHotkey === null) {
+                        getId('hotkeysMessage').textContent = 'Highlighted hotkeys can be modified';
+                        return;
+                    }
                 }
                 const removed = hotkeys.active[newHotkey] as numbersList;
                 if (removed !== undefined) {
                     delete globalSave.numbers[removed];
-                    getQuery(`#${removed}Hotkey button`).textContent = 'None';
+                    updateHotkeyButton(getQuery(`#${removed}Hotkey button`), 'None');
                     getQuery(`#${extraHotkeyName[removed]}Hotkey span`).textContent = 'None';
                 }
                 if (assign) {
-                    button.textContent = newHotkey;
+                    updateHotkeyButton(button, newHotkey);
                     getQuery(`#${extraHotkeyName[key]}Hotkey span`).textContent = newHotkey.replace('Numbers', '0').replace('Numpad', 'Num 0');
                     globalSave.numbers[key] = newHotkey;
                 }
 
                 assignHotkeys();
                 saveGlobalSettings();
+                let message = assign ? `Set hotkey for ${actionText} to ${newHotkey}` : `Removed hotkey from ${actionText}`;
+                if (removed !== undefined && removed !== key) { message += `, removed from ${getActionText(getQuery(`#${removed}Hotkey button`))}`; }
+                getId('hotkeysMessage').textContent = message;
             });
         }
         getId('restoreHotkeys').addEventListener('click', () => {
             globalSave.hotkeys = deepClone(globalSaveStart.hotkeys);
             globalSave.numbers = deepClone(globalSaveStart.numbers);
-            for (const key of hotkeys.main) { getQuery(`#${key}Hotkey button`).textContent = globalSave.hotkeys[0][key] ?? 'None'; }
+            for (const key of hotkeys.main) { updateHotkeyButton(getQuery(`#${key}Hotkey button`), globalSave.hotkeys[0][key] ?? 'None'); }
             for (const key of hotkeys.numbers) {
                 const value = globalSave.numbers[key] ?? 'None';
-                getQuery(`#${key}Hotkey button`).textContent = value;
+                updateHotkeyButton(getQuery(`#${key}Hotkey button`), value);
                 getQuery(`#${extraHotkeyName[key]}Hotkey span`).textContent = value.replace('Numbers', '0').replace('Numpad', 'Num 0');
             }
             assignHotkeys();
             saveGlobalSettings();
+            getId('hotkeysMessage').textContent = 'Restored default hotkeys values';
         });
     }
 
