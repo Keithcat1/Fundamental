@@ -4,7 +4,7 @@ import Overlimit from './Limit';
 import { assignInnerHTML, getClass, getId, getQuery, toggleSwap } from './Main';
 import { effectsCache, global, player, universeName } from './Player';
 import { MDStrangenessPage, Notify, checkProgress, globalSave, resetMinSizes, setTheme, specialHTML } from './Special';
-import { calculateBuildingsCost, stageResetCheck, setActiveStage, calculateEffects, assignBuildingsProduction, assignResetInformation, calculateVerseCost, calculateTreeCost, calculateStrangenessCost } from './Stage';
+import { calculateBuildingsCost, stageResetCheck, setActiveStage, calculateEffects, assignBuildingsProduction, assignResetInformation, calculateVerseCost, calculateTreeCost, calculateStrangenessCost, calculateQuarksGain } from './Stage';
 import type { gameSubtab, gameTab } from './Types';
 
 /** Tab being null will test current tab/subtab being unlocked and updates subtab list */
@@ -88,6 +88,8 @@ export const numbersUpdate = (ignoreOffline = false) => {
     const buildings = player.buildings[active];
     const challenge = player.challenges.active;
     const vacuum = player.inflation.vacuum;
+    const interstellar = player.inflation.vacuum || active === 4 || active === 5;
+
 
     if (!global.debug.timeLimit) {
         let noTime = null as boolean | null;
@@ -438,9 +440,7 @@ export const numbersUpdate = (ignoreOffline = false) => {
         }
     } else if (tab === 'strangeness') {
         if (subtab === 'Matter') {
-            const interstellar = vacuum || active === 4 || active === 5;
-            if (interstellar && player.elements[26] < 0.5) { assignResetInformation.quarksGain(); }
-            const mainGain = interstellar ? global.strangeInfo.strange0Gain : calculateEffects.strangeGain(false, active !== 6 || !player.darkness.active || player.tree[0][5] < 1 || player.tree[0][4] < 1);
+            const mainGain = calculateQuarksGain();
             getId('strange0Gain').textContent = format(mainGain, { padding: true });
             getId('strangeRate').textContent = format(mainGain / player.time.stage, { type: 'income' });
             getId('strange0Cur').textContent = format(player.strange[0].current, { padding: true });

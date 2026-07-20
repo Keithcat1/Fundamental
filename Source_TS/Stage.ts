@@ -1953,6 +1953,14 @@ export const calculateTreeCost = (index: number, stageIndex: number, level = pla
     return Math.floor(Math.round((firstCost + scaling * level) * 100) / 100);
 };
 
+export const calculateQuarksGain = () => {
+    const active = player.stage.active;
+    const interstellar = player.inflation.vacuum || active === 4 || active === 5;
+    if (interstellar && player.elements[26] < 0.5) { assignResetInformation.quarksGain(); }
+
+    return interstellar ? global.strangeInfo.strange0Gain : calculateEffects.strangeGain(false, active !== 6 || !player.darkness.active || player.tree[0][5] < 1 || player.tree[0][4] < 1);
+};
+
 export const assignMaxLevel = (research: number, stageIndex: number, type: 'researches' | 'researchesExtra' | 'researchesAuto' | 'ASR' | 'strangeness' | 'inflation', addAuto = false) => {
     let max = null as number | null;
     if (type === 'researches') {
@@ -2377,9 +2385,9 @@ export const endResetUser = async() => {
         }
     }
 
+    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `+${calculateEffects.cosmonGain()} Cosmons`; }
     endReset();
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Caused End reset'; }
 };
 
 const endReset = () => {
@@ -2514,8 +2522,13 @@ export const stageResetUser = async() => {
             if (!stageResetCheck(active)) { return Notify('Stage reset canceled, requirements are no longer met'); }
         }
     }
+    if (globalSave.SRSettings[0]) {
+        const quarks = calculateQuarksGain();
+        if(quarks > 0) {
+            getId('SRMain').textContent = `+${format(quarks)} strange quarks`;
+        }
+    }
     stageResetReward(active);
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Stage reset'; }
 };
 
 /** Requires call of stageResetCheck or assignResetInformation.quarksGain */
@@ -2722,17 +2735,21 @@ export const dischargeResetUser = async() => {
         }
     }
 
-    dischargeReset();
+    dischargeReset(true);
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Discharged'; }
 };
 
-const dischargeReset = () => {
+const dischargeReset = (user = false) => {
+    const srArray = [];
     if (player.strangeness[1][4] < 2 && player.discharge.energy >= global.dischargeInfo.next && player.discharge.energy >= global.dischargeInfo.energyTrue) {
         player.discharge.energy -= Math.ceil(global.dischargeInfo.next);
         player.discharge.current++;
+        if(user) srArray.push(`${global.dischargeInfo.base}X discharge goal boost`);
     }
+    if(user) srArray.push(`${global.dischargeInfo.energyTrue - player.discharge.energy} energy restored`);
     awardVoidReward(1);
+    if (user && globalSave.SRSettings[0]) { getId('SRMain').textContent = srArray.join(", "); }
+
     reset('discharge', player.challenges.active === 0 ? (player.tree[1][5] >= 4 ? [1, 3, 4, 5] : [1, 2, 3, 4, 5]) : [1]);
 };
 
@@ -2761,14 +2778,16 @@ const vaporizationResetCheck = (clouds = null as number | null): boolean => {
 export const vaporizationResetUser = async() => {
     if (!vaporizationResetCheck()) { return; }
 
+    const rainNow = calculateEffects.S2Extra1(player.researchesExtra[2][1]);
+    const rainAfter = calculateEffects.S2Extra1(player.researchesExtra[2][1], true);
+    const totalBoost = (calculateEffects.clouds(true) / calculateEffects.clouds()) * (rainAfter / rainNow) * (calculateEffects.S2Extra2(rainAfter) / calculateEffects.S2Extra2(rainNow));
+
     if (player.toggles.confirm[2] !== 'None') {
         const array = [];
         if (player.strangeness[2][4] >= 2 || (player.inflation.vacuum && player.researchesExtra[2][0] >= 1 && player.tree[1][5] >= 2)) {
             array.push('already gaining Clouds without needing to reset');
         }
-        const rainNow = calculateEffects.S2Extra1(player.researchesExtra[2][1]);
-        const rainAfter = calculateEffects.S2Extra1(player.researchesExtra[2][1], true);
-        if ((calculateEffects.clouds(true) / calculateEffects.clouds()) * (rainAfter / rainNow) * (calculateEffects.S2Extra2(rainAfter) / calculateEffects.S2Extra2(rainNow)) < 2) {
+        if (totalBoost < 2) {
             array.push('boost from doing it is below 2x');
         }
         if (player.stage.active !== 2) {
@@ -2785,7 +2804,7 @@ export const vaporizationResetUser = async() => {
 
     vaporizationReset();
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Vaporized'; }
+    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${format(totalBoost)}X Vaporized`; }
 };
 
 const vaporizationReset = (autoClouds = null as number | null) => {
@@ -2974,7 +2993,7 @@ export const collapseResetUser = async() => {
 
     collapseReset();
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Collapsed'; }
+    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${format(global.collapseInfo.newMass)} solar mass`; }
 };
 
 const collapseReset = () => {
