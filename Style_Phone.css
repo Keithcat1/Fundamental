@@ -1,7 +1,9 @@
 html { --elements-columns-phone: min(var(--elements-columns), 9); }
 
-#notifications { max-height: 33vh; }
-#notifications > p { width: 95vw; }
+#notifications {
+    max-height: 33vh;
+    width: 95vw;
+}
 
 .insideTab {
     gap: 1.2em;
@@ -78,8 +80,7 @@ html { --elements-columns-phone: min(var(--elements-columns), 9); }
     right: 1vw;
 }
 
-#footerStats,
-#footerMain > nav { column-gap: 0.8em; }
+#footerMain > article, #footerMain > nav { gap: 0.8em; }
 
 #stageSelect {
     max-width: 60vw;
