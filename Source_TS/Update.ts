@@ -512,7 +512,6 @@ export const numbersUpdate = (ignoreOffline = false) => {
             getId('cosmonPeakAt').textContent = format(player.inflation.peak[1], { type: 'time' });
             for (let s = 0; s <= 1; s++) {
                 //for (let i = 0; i < global.treeInfo[s].name.length; i++) { visualUpdateResearches(i, s, 'inflation'); }
-            for (let s = 0; s < global.treeInfo.length; s++) {
             }
             getUpgradeDescription('inflation');
         }
@@ -1675,7 +1674,7 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
                 const pointer = global.treeInfo[stageIndex];
                 const level = player.tree[stageIndex][index];
 
-                const inflationText = `${stageIndex === 0 && global.loadouts.open ? `#${index + 1}. ` : ''}${pointer.name[index]}. (Level ${format(level)} out of ${format(pointer.max[index])})`;
+                const inflationText = `${stageIndex === 0 && global.loadoutsInfo.open ? `#${index + 1}. ` : ''}${pointer.name[index]}. (Level ${format(level)} out of ${format(pointer.max[index])})`;
                 const inflationEffect = pointer.effectText[index]();
                 let inflationCost;
                 if (level >= pointer.max[index]) {
@@ -1767,87 +1766,88 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
             index === 0 ? 'Unknown.' : `${format(pointer.cost[index])} Stardust.${globalSave.MDSettings[0] ? ' (Hold to create)' : ''}`;
     } else {
         const stageIndex = player.stage.active;
-        const index = global.lastUpgrade[stageIndex][0];
-        if (index === null) {
-            getId('upgradesName').textContent = 'Hover to see.';
-            getId('upgradesEffect').textContent = 'Hover to see.';
-            getId('upgradesCost').textContent = `${global.stageInfo.costName[stageIndex]}.`;
-        } else if (type === 'upgrades') {
-            const pointer = global[`${type}Info`][stageIndex];
-            getId('upgradesName').textContent = `${pointer.name[index]}.`;
-            getId('upgradesEffect').textContent = pointer.effectText[index]();
-            getId('upgradesCost').textContent = player.upgrades[stageIndex][index] === 1 ? 'Maxed.' :
-                stageIndex === 2 && index === 0 && player.buildings[2][1].true < 1 && player.buildings[2][2].true < 1 && player.inflation.vacuum ? 'Requires any amount of self-made Drops to create.' :
-                stageIndex === 4 && global.collapseInfo.unlockU[index] > player.collapse.mass && player.researchesExtra[5][0] < 1 ? `Unlocked at ${format(global.collapseInfo.unlockU[index])} Mass.` :
-                `${format(pointer.cost[index])} ${global.stageInfo.costName[stageIndex]}.`;
+        if (type === 'upgrades') {
+            const pointer = global.upgradesInfo[stageIndex];
+            for (var index = 0; index < pointer.maxActive; index++) {
+                getId(`upgrade${index}Name`).textContent = `${pointer.name[index]}.`;
+                getId(`upgrade${index}Effect`).textContent = pointer.effectText[index]();
+                getId(`upgrade${index}Cost`).textContent = player.upgrades[stageIndex][index] === 1 ? 'Maxed.' :
+                    stageIndex === 2 && index === 0 && player.buildings[2][1].true < 1 && player.buildings[2][2].true < 1 && player.inflation.vacuum ? 'Requires any amount of self-made Drops to create.' :
+                    stageIndex === 4 && global.collapseInfo.unlockU[index] > player.collapse.mass && player.researchesExtra[5][0] < 1 ? `Unlocked at ${format(global.collapseInfo.unlockU[index])} Mass.` :
+                    `${format(pointer.cost[index])} ${global.stageInfo.costName[stageIndex]}.`;
+            }
         } else if (type === 'researches' || type === 'researchesExtra') {
             const pointer = global[`${type}Info`][stageIndex];
-            const level = player[type][stageIndex][index];
-            if (type === 'researchesExtra' && stageIndex === 4 && index === 0) { pointer.name[0] = ['Nova', 'Supernova', 'Hypernova'][Math.min(level, 2)]; }
+                for (var index = 0; index < pointer.maxActive; index++) {
+                const level = player[type][stageIndex][index];
+                if (type === 'researchesExtra' && stageIndex === 4 && index === 0) { pointer.name[0] = ['Nova', 'Supernova', 'Hypernova'][Math.min(level, 2)]; }
 
-            getId('upgradesName').textContent = `${pointer.name[index]}. (Level ${format(level)} out of ${format(pointer.max[index])})`;
-            getId('upgradesEffect').textContent = pointer.effectText[index]();
-            if (level >= pointer.max[index]) {
-                getId('upgradesCost').textContent = 'Maxed.';
-            } else if (stageIndex === 4 && type === 'researches' && global.collapseInfo.unlockR[index] > player.collapse.mass && player.researchesExtra[5][0] < 1) {
-                getId('upgradesCost').textContent = `Unlocked at ${format(global.collapseInfo.unlockR[index])} Mass.`;
-            } else if (stageIndex === 5 && type === 'researchesExtra' && player.strangeness[5][3] < 1) {
-                getId('upgradesCost').textContent = "Requires 'Gravitational bound' Strangeness.";
-            } else {
-                let newLevels = 1;
-                let cost = pointer.cost[index];
-                const tillMax = pointer.max[index] - level;
-                if (tillMax > 1 && (player.toggles.max[0] !== global.hotkeys.shift)) {
-                    const scaling = pointer.scaling[index] as number;
-                    if (typeof cost === 'number') {
-                        const currency = player[stageIndex === 1 ? 'discharge' : 'darkness'].energy;
-                        if (stageIndex === 1 && (player.challenges.supervoid[3] >= 5 || player.accretion.rank >= 6) && player.strangeness[1][9] >= 1) {
-                            newLevels = Math.min(Math.max(Math.floor((currency - cost) / scaling + 1), 1), tillMax);
-                            if (newLevels > 1) { cost += (newLevels - 1) * scaling; }
+                getId(`${type}${index}name`).textContent = `${pointer.name[index]}. (Level ${format(level)} out of ${format(pointer.max[index])})`;
+                getId(`${type}${index}Effect`).textContent = pointer.effectText[index]();
+                if (level >= pointer.max[index]) {
+                    getId(`${type}${index}cost`).textContent = 'Maxed.';
+                } else if (stageIndex === 4 && type === 'researches' && global.collapseInfo.unlockR[index] > player.collapse.mass && player.researchesExtra[5][0] < 1) {
+                    getId(`${type}${index}cost`).textContent = `Unlocked at ${format(global.collapseInfo.unlockR[index])} Mass.`;
+                } else if (stageIndex === 5 && type === 'researchesExtra' && player.strangeness[5][3] < 1) {
+                    getId(`${type}${index}cost`).textContent = "Requires 'Gravitational bound' Strangeness.";
+                } else {
+                    let newLevels = 1;
+                    let cost = pointer.cost[index];
+                    const tillMax = pointer.max[index] - level;
+                    if (tillMax > 1 && (player.toggles.max[0] !== global.hotkeys.shift)) {
+                        const scaling = pointer.scaling[index] as number;
+                        if (typeof cost === 'number') {
+                            const currency = player[stageIndex === 1 ? 'discharge' : 'darkness'].energy;
+                            if (stageIndex === 1 && (player.challenges.supervoid[3] >= 5 || player.accretion.rank >= 6) && player.strangeness[1][9] >= 1) {
+                                newLevels = Math.min(Math.max(Math.floor((currency - cost) / scaling + 1), 1), tillMax);
+                                if (newLevels > 1) { cost += (newLevels - 1) * scaling; }
+                            } else {
+                                const simplify = cost - scaling / 2;
+                                newLevels = Math.min(Math.max(Math.floor(((simplify ** 2 + 2 * scaling * currency) ** 0.5 - simplify) / scaling), 1), tillMax);
+                                if (newLevels > 1) { cost = newLevels * (newLevels * scaling / 2 + simplify); }
+                            }
                         } else {
-                            const simplify = cost - scaling / 2;
-                            newLevels = Math.min(Math.max(Math.floor(((simplify ** 2 + 2 * scaling * currency) ** 0.5 - simplify) / scaling), 1), tillMax);
-                            if (newLevels > 1) { cost = newLevels * (newLevels * scaling / 2 + simplify); }
+                            const scalingMinus = typeof scaling === 'number' ? scaling - 1 : scaling;
+                            const currency = player.buildings[stageIndex === 5 ? 4 : stageIndex][stageIndex === 2 ? 1 : 0].current;
+                            newLevels = Math.min(Math.max(Math.floor(new Overlimit(currency).multiply(scalingMinus).divide(cost).plus(1).log(scaling).toNumber()), 1), tillMax);
+                            if (newLevels > 1) { cost = new Overlimit(scaling).power(newLevels).minus(1).divide(scalingMinus).multiply(cost); }
                         }
-                    } else {
-                        const scalingMinus = typeof scaling === 'number' ? scaling - 1 : scaling;
-                        const currency = player.buildings[stageIndex === 5 ? 4 : stageIndex][stageIndex === 2 ? 1 : 0].current;
-                        newLevels = Math.min(Math.max(Math.floor(new Overlimit(currency).multiply(scalingMinus).divide(cost).plus(1).log(scaling).toNumber()), 1), tillMax);
-                        if (newLevels > 1) { cost = new Overlimit(scaling).power(newLevels).minus(1).divide(scalingMinus).multiply(cost); }
                     }
-                }
 
-                getId('upgradesCost').textContent = `${format(cost)} ${stageIndex === 6 && type === 'researchesExtra' ? `${global.april.dark} energy` : global.stageInfo.costName[stageIndex]}.${newLevels > 1 ? ` [x${newLevels}]` : ''}`;
+                    getId(`${type}${index}cost`).textContent = `${format(cost)} ${stageIndex === 6 && type === 'researchesExtra' ? `${global.april.dark} energy` : global.stageInfo.costName[stageIndex]}.${newLevels > 1 ? ` [x${newLevels}]` : ''}`;
+                }
             }
         } else if (type === 'researchesAuto') {
             const pointer = global.researchesAutoInfo;
-            let level = player.researchesAuto[index];
+            for (var index = 0; index < pointer.name.length; index++) {
+                let level = player.researchesAuto[index];
 
-            getId('upgradesName').textContent = `${pointer.name[index]}. (Level ${level} out of ${pointer.max[index]})`;
-            getId('upgradesEffect').textContent = pointer.effectText[index]();
-            if (level >= pointer.max[index]) {
-                getId('upgradesCost').textContent = 'Maxed.';
-            } else {
-                const autoStage = pointer.autoStage[index][level];
-                if (index === 1) { //Level from here can only be used for cost
-                    if (player.strangeness[4][6] >= 1) { level--; }
-                } else if (index === 2) {
-                    if (player.strangeness[1][4] >= 1) { level--; }
-                    if (player.strangeness[2][4] >= 1) { level--; }
-                    if (player.strangeness[3][4] >= 1) { level--; }
-                    if (player.strangeness[4][4] >= 1) { level--; }
-                    if (player.inflation.vacuum) { level++; }
+                getId(`${type}${index}name`).textContent = `${pointer.name[index]}. (Level ${level} out of ${pointer.max[index]})`;
+                getId(`${type}${index}Effect`).textContent = pointer.effectText[index]();
+                if (level >= pointer.max[index]) {
+                    getId(`${type}${index}cost`).textContent = 'Maxed.';
+                } else {
+                    const autoStage = pointer.autoStage[index][level];
+                    if (index === 1) { //Level from here can only be used for cost
+                        if (player.strangeness[4][6] >= 1) { level--; }
+                    } else if (index === 2) {
+                        if (player.strangeness[1][4] >= 1) { level--; }
+                        if (player.strangeness[2][4] >= 1) { level--; }
+                        if (player.strangeness[3][4] >= 1) { level--; }
+                        if (player.strangeness[4][4] >= 1) { level--; }
+                        if (player.inflation.vacuum) { level++; }
+                    }
+                    if (index === 1 && player.strangeness[4][6] >= 1) { level = Math.max(level - 1, 0); }
+                getId(`${type}${index}cost`).textContent = `${format(pointer.costRange[index][Math.max(level, 0)])} ${global.stageInfo.costName[autoStage]}. ${!(autoStage === stageIndex || (stageIndex === 5 && autoStage === 4)) ? `(Requires to be in the ${global.stageInfo.word[autoStage]})` : ''}`;
                 }
-                if (index === 1 && player.strangeness[4][6] >= 1) { level = Math.max(level - 1, 0); }
-                getId('upgradesCost').textContent = `${format(pointer.costRange[index][Math.max(level, 0)])} ${global.stageInfo.costName[autoStage]}. ${!(autoStage === stageIndex || (stageIndex === 5 && autoStage === 4)) ? `(Requires to be in the ${global.stageInfo.word[autoStage]})` : ''}`;
             }
         } else if (type === 'ASR') {
-            const pointer = global.ASRInfo;
-            const level = player.ASR[stageIndex];
+            const pointer = global.ASRInfo
+const level = player.ASR[stageIndex];
 
-            getId('upgradesName').textContent = `${pointer.name}. (Level ${level} out of ${pointer.max[stageIndex]})`;
-            getId('upgradesEffect').textContent = pointer.effectText();
-            getId('upgradesCost').textContent = level >= pointer.max[stageIndex] ? 'Maxed.' : `${format(pointer.costRange[stageIndex][level])} ${global.stageInfo.costName[stageIndex]}.`;
+            getId(`${type}Name`).textContent = `${pointer.name}. (Level ${level} out of ${pointer.max[stageIndex]})`;
+            getId(`${type}Effect`).textContent = pointer.effectText();
+            getId(`${type}Cost`).textContent = level >= pointer.max[stageIndex] ? 'Maxed.' : `${format(pointer.costRange[stageIndex][level])} ${global.stageInfo.costName[stageIndex]}.`;
         }
     }
 };
@@ -1979,33 +1979,6 @@ const visualUpdateUpgrades = (index: number, stageIndex: number, type: 'upgrades
         }
         image.style.backgroundColor = color;
 
-        // Update inline upgrade details for screen readers and visible text
-        const pointer = global[`${type}Info`][stageIndex];
-        const name = pointer.name[index];
-        const notEnoughUniverses = stageIndex === 5 && global.mergeInfo.unlockU[index] > calculateEffects.trueUniverses();
-        const effect = notEnoughUniverses && global.mergeInfo.unlockU[index] > player.progress.universes[player.inflation.vacuum ? 1 : 0] ? 'Effect will be revealed once requirements are met.' : pointer.effectText[index]();
-        
-        const cost = player.upgrades[stageIndex][index] === 1 ? 'Created.' :
-            stageIndex === 1 && player.upgrades[1][5] !== 1 && ((index === 3 || index === 4) && player.buildings[1][(player.inflation.vacuum ? 4 : 2) + (index === 3 ? 0 : 1)].total.equal(0)) ? `Requires any amount of ${index === 3 ? 'Atoms' : 'Molecules'} to create.` :
-            stageIndex === 2 && index === 0 && player.buildings[2][1].true < 1 && player.buildings[2][2].true < 1 ? 'Requires any amount of self-made Drops to create.' :
-            stageIndex === 4 && global.collapseInfo.unlockU[index] > player.collapse.mass && player.researchesExtra[5][0] < 1 ? `Unlocked at ${format(global.collapseInfo.unlockU[index])} Mass.` :
-            notEnoughUniverses ? `Unlocked at ${global.mergeInfo.unlockU[index]} ${universeName()} Universes.` :
-            `${format(pointer.cost[index])} ${global.stageInfo.costName[stageIndex]}.`;
-
-        const nameSpan = image.querySelector('.upgradeName');
-        const costSpan = image.querySelector('.upgradeCost');
-        const effectSpan = image.querySelector('.upgradeEffect');
-
-        if (nameSpan && costSpan && effectSpan) {
-            nameSpan.textContent = name;
-            effectSpan.textContent = effect;
-            if (player.upgrades[stageIndex][index] === 1) {
-                // Already purchased; since no string parsing is required, remove the cost from the description
-                costSpan.textContent = '';
-            } else {
-                costSpan.textContent = cost;
-            }
-        }
     } else if (type === 'elements') {
         const image = getId(`element${index}`);
         const pointer = global.elementsInfo;
@@ -2082,51 +2055,6 @@ const visualUpdateResearches = (index: number, stageIndex: number, type: 'resear
         mainHTML.classList[max < 1e3 ? 'remove' : 'add']('noMaxLevel');
     }
 
-    // Update inline upgrade details (name/cost/effect) for researches in the upgrades tab
-    if (type === 'strangeness' || type === 'inflation') { return; }
-    const nameSpan = getQuery(`${textPointer} > .upgradeInfo > .upgradeName`) as HTMLElement | null;
-    const costSpan = getQuery(`${textPointer} > .upgradeInfo > .upgradeCost`) as HTMLElement | null;
-    const effectSpan = getQuery(`${textPointer} > .upgradeInfo > .upgradeEffect`) as HTMLElement | null;
-    if (!nameSpan || !costSpan || !effectSpan) { return; }
-
-    if (type === 'researches' || type === 'researchesExtra') {
-        const pointer = global[`${type}Info`][stageIndex];
-        if (type === 'researchesExtra' && stageIndex === 4 && index === 0) { pointer.name[0] = ['Nova', 'Supernova', 'Hypernova'][Math.min(level, 2)]; }
-        const notEnoughUniverses = stageIndex === 5 && global.mergeInfo[`unlock${type === 'researches' ? 'R' : 'E'}`][index] > calculateEffects.trueUniverses();
-
-        nameSpan.textContent = `${pointer.name[index]} (${format(level)}/${format(pointer.max[index])})`;
-        effectSpan.textContent = notEnoughUniverses && global.mergeInfo[`unlock${type === 'researches' ? 'R' : 'E'}`][index] > player.progress.universes[player.inflation.vacuum ? 1 : 0] ? 'Effect will be revealed once requirements are met.' : pointer.effectText[index]();
-
-        if (level >= pointer.max[index]) {
-            costSpan.textContent = 'Maxed.';
-        } else if (stageIndex === 4 && type === 'researches' && global.collapseInfo.unlockR[index] > player.collapse.mass && player.researchesExtra[5][0] < 1) {
-            costSpan.textContent = `Unlocked at ${format(global.collapseInfo.unlockR[index])} Mass.`;
-        } else if (stageIndex === 5 && type === 'researchesExtra' && player.strangeness[5][3] < 1) {
-            costSpan.textContent = "Requires 'Gravitational bound' Strangeness.";
-        } else if (notEnoughUniverses) {
-            costSpan.textContent = `Unlocked at ${global.mergeInfo[`unlock${type === 'researches' ? 'R' : 'E'}`][index]} ${universeName()} Universes.`;
-        } else {
-            costSpan.textContent = `${format(pointer.cost[index])} ${stageIndex === 6 && type === 'researchesExtra' ? `${global.april.light ? 'Light' : 'Dark'} energy` : global.stageInfo.costName[stageIndex]}.`;
-        }
-    } else if (type === 'researchesAuto') {
-        const pointer = global.researchesAutoInfo;
-        nameSpan.textContent = `${pointer.name[index]} (${level}/${pointer.max[index]})`;
-        effectSpan.textContent = pointer.effectText[index]();
-        if (level >= pointer.max[index]) {
-            costSpan.textContent = 'Maxed.';
-        } else {
-            const autoStage = pointer.autoStage[index][level];
-            costSpan.textContent = `${format(pointer.costRange[index][Math.max(level, 0)])} ${global.stageInfo.costName[autoStage]}.`;
-        }
-    } else if (type === 'ASR') {
-        const pointer = global.ASRInfo;
-        nameSpan.textContent = `${pointer.name} (${level}/${pointer.max[stageIndex]})`;
-        effectSpan.textContent = pointer.effectText();
-        costSpan.textContent = level >= pointer.max[stageIndex] ? 'Maxed.' :
-            stageIndex === 1 && player.upgrades[1][5] !== 1 ? "Cannot be created without 'Superposition' Upgrade." :
-            stageIndex === 3 && player.accretion.rank < 1 ? "Cannot be created at 'Ocean world' Rank." :
-            `${format(pointer.costRange[stageIndex][level])} ${global.stageInfo.costName[stageIndex]}.`;
-    }
 };
 
 const updateRankInfo = () => {

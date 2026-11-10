@@ -980,7 +980,7 @@ try { //Start everything
             target.style.minHeight = `${target.getBoundingClientRect().height}px`;
         }
     });
-    observerY.observe(getId('milestonesMultiline').parentElement as HTMLElement);
+//    observerY.observe(getId('milestonesMultiline').parentElement as HTMLElement);
 
     /* Global */
     assignHotkeys();

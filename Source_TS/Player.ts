@@ -1890,18 +1890,18 @@ export const prepareVacuum = (state: boolean) => { //Must not use direct player 
         }
         milestonesInfo[6].maxActive = 1;
         getId('milestonesSubtext').innerHTML = 'Completing any tier will award 1 <span class="greenText">Strange quark</span>';
-        milestone1S1.src = 'Used_art/Quarks.png';
+//        milestone1S1.src = 'Used_art/Quarks.png';
         milestonesInfo[2].name[0] = 'A Nebula of Drops';
         getQuery('#milestone1Stage2Main > span').textContent = 'A Nebula of Drops';
-        milestone1S2.alt = 'A Nebula of Drops';
+//        milestone1S2.alt = 'A Nebula of Drops';
         milestonesInfo[2].name[1] = 'Just a bigger Puddle';
         getQuery('#milestone2Stage2Main > span').textContent = 'Just a bigger Puddle';
-        milestone2S2.src = 'Used_art/Puddle.png';
-        milestone2S2.alt = 'Just a bigger Puddle';
-        milestone1S3.alt = 'Cluster of Mass';
+//        milestone2S2.src = 'Used_art/Puddle.png';
+//        milestone2S2.alt = 'Just a bigger Puddle';
+//        milestone1S3.alt = 'Cluster of Mass';
         milestonesInfo[3].name[0] = 'Cluster of Mass';
         getQuery('#milestone1Stage3Main > span').textContent = 'Cluster of Mass';
-        milestone2S4.src = 'Used_art/Main_sequence%20mass.png';
+//        milestone2S4.src = 'Used_art/Main_sequence%20mass.png';
         assignInnerHTML('#mergeFalse', 'Attempt to <span class="darkvioletText">Merge</span> <span class="grayText">Galaxies</span> together, which will result in <span class="orchidText">Vacuum</span> decaying into its <span class="greenText">true</span> state');
         getQuery('#stageHistory > h3').textContent = 'Interstellar Stage resets:';
 
