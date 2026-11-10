@@ -429,7 +429,12 @@ export const numbersUpdate = (ignoreOffline = false) => {
             for (let i = 0; i < global.researchesExtraInfo[active].maxActive; i++) { visualUpdateResearches(i, active, 'researchesExtra'); }
             for (let i = 0; i < global.researchesAutoInfo.name.length; i++) { visualUpdateResearches(i, 0, 'researchesAuto'); }
             visualUpdateResearches(0, active, 'ASR');
-            //getUpgradeDescription(global.lastUpgrade[active][1]);
+            getUpgradeDescription("researches");
+            getUpgradeDescription("researchesExtra");
+            getUpgradeDescription("researchesAuto");
+            getUpgradeDescription("ASR");
+
+            getUpgradeDescription("upgrades");
         } else if (subtab === 'Elements') {
             for (let i = 0; i < global.elementsInfo.name.length; i++) { visualUpdateUpgrades(i, 4, 'elements'); }
 //            if (global.lastElement !== 0) { getUpgradeDescription('elements'); }
@@ -1769,9 +1774,9 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
         if (type === 'upgrades') {
             const pointer = global.upgradesInfo[stageIndex];
             for (var index = 0; index < pointer.maxActive; index++) {
-                getId(`upgrade${index}Name`).textContent = `${pointer.name[index]}.`;
-                getId(`upgrade${index}Effect`).textContent = pointer.effectText[index]();
-                getId(`upgrade${index}Cost`).textContent = player.upgrades[stageIndex][index] === 1 ? 'Maxed.' :
+                getId(`upgrade${index+1}Name`).textContent = `${pointer.name[index]}.`;
+                getId(`upgrade${index+1}Effect`).textContent = pointer.effectText[index]();
+                getId(`upgrade${index+1}Cost`).textContent = player.upgrades[stageIndex][index] === 1 ? 'Maxed.' :
                     stageIndex === 2 && index === 0 && player.buildings[2][1].true < 1 && player.buildings[2][2].true < 1 && player.inflation.vacuum ? 'Requires any amount of self-made Drops to create.' :
                     stageIndex === 4 && global.collapseInfo.unlockU[index] > player.collapse.mass && player.researchesExtra[5][0] < 1 ? `Unlocked at ${format(global.collapseInfo.unlockU[index])} Mass.` :
                     `${format(pointer.cost[index])} ${global.stageInfo.costName[stageIndex]}.`;
@@ -1782,14 +1787,14 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
                 const level = player[type][stageIndex][index];
                 if (type === 'researchesExtra' && stageIndex === 4 && index === 0) { pointer.name[0] = ['Nova', 'Supernova', 'Hypernova'][Math.min(level, 2)]; }
 
-                getId(`${type}${index}name`).textContent = `${pointer.name[index]}. (Level ${format(level)} out of ${format(pointer.max[index])})`;
-                getId(`${type}${index}Effect`).textContent = pointer.effectText[index]();
+                getId(`${type}${index+1}Name`).textContent = `${pointer.name[index]}. (Level ${format(level)} out of ${format(pointer.max[index])})`;
+                getId(`${type}${index+1}Effect`).textContent = pointer.effectText[index]();
                 if (level >= pointer.max[index]) {
-                    getId(`${type}${index}cost`).textContent = 'Maxed.';
+                    getId(`${type}${index+1}Cost`).textContent = 'Maxed.';
                 } else if (stageIndex === 4 && type === 'researches' && global.collapseInfo.unlockR[index] > player.collapse.mass && player.researchesExtra[5][0] < 1) {
-                    getId(`${type}${index}cost`).textContent = `Unlocked at ${format(global.collapseInfo.unlockR[index])} Mass.`;
+                    getId(`${type}${index+1}Cost`).textContent = `Unlocked at ${format(global.collapseInfo.unlockR[index])} Mass.`;
                 } else if (stageIndex === 5 && type === 'researchesExtra' && player.strangeness[5][3] < 1) {
-                    getId(`${type}${index}cost`).textContent = "Requires 'Gravitational bound' Strangeness.";
+                    getId(`${type}${index+1}Cost`).textContent = "Requires 'Gravitational bound' Strangeness.";
                 } else {
                     let newLevels = 1;
                     let cost = pointer.cost[index];
@@ -1814,7 +1819,7 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
                         }
                     }
 
-                    getId(`${type}${index}cost`).textContent = `${format(cost)} ${stageIndex === 6 && type === 'researchesExtra' ? `${global.april.dark} energy` : global.stageInfo.costName[stageIndex]}.${newLevels > 1 ? ` [x${newLevels}]` : ''}`;
+                    getId(`${type}${index+1}Cost`).textContent = `${format(cost)} ${stageIndex === 6 && type === 'researchesExtra' ? `${global.april.dark} energy` : global.stageInfo.costName[stageIndex]}.${newLevels > 1 ? ` [x${newLevels}]` : ''}`;
                 }
             }
         } else if (type === 'researchesAuto') {
@@ -1822,10 +1827,10 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
             for (var index = 0; index < pointer.name.length; index++) {
                 let level = player.researchesAuto[index];
 
-                getId(`${type}${index}name`).textContent = `${pointer.name[index]}. (Level ${level} out of ${pointer.max[index]})`;
-                getId(`${type}${index}Effect`).textContent = pointer.effectText[index]();
+                getId(`${type}${index+1}Name`).textContent = `${pointer.name[index]}. (Level ${level} out of ${pointer.max[index]})`;
+                getId(`${type}${index+1}Effect`).textContent = pointer.effectText[index]();
                 if (level >= pointer.max[index]) {
-                    getId(`${type}${index}cost`).textContent = 'Maxed.';
+                    getId(`${type}${index+1}Cost`).textContent = 'Maxed.';
                 } else {
                     const autoStage = pointer.autoStage[index][level];
                     if (index === 1) { //Level from here can only be used for cost
@@ -1838,7 +1843,7 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
                         if (player.inflation.vacuum) { level++; }
                     }
                     if (index === 1 && player.strangeness[4][6] >= 1) { level = Math.max(level - 1, 0); }
-                getId(`${type}${index}cost`).textContent = `${format(pointer.costRange[index][Math.max(level, 0)])} ${global.stageInfo.costName[autoStage]}. ${!(autoStage === stageIndex || (stageIndex === 5 && autoStage === 4)) ? `(Requires to be in the ${global.stageInfo.word[autoStage]})` : ''}`;
+                getId(`${type}${index+1}Cost`).textContent = `${format(pointer.costRange[index][Math.max(level, 0)])} ${global.stageInfo.costName[autoStage]}. ${!(autoStage === stageIndex || (stageIndex === 5 && autoStage === 4)) ? `(Requires to be in the ${global.stageInfo.word[autoStage]})` : ''}`;
                 }
             }
         } else if (type === 'ASR') {
