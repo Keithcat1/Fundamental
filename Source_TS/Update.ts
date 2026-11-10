@@ -981,9 +981,9 @@ export const visualUpdate = (ignoreOffline = false) => {
                 }
                 getId('upgrades').style.display = '';
                 getId('stageResearches').style.display = '';
-                getQuery('#research1 > span').style.minWidth = '';
-                getQuery('#research2 > span').style.minWidth = '';
-                getQuery('#researchExtra1 > span').style.minWidth = '';
+//                getQuery('#research1 > span').style.minWidth = '';
+//                getQuery('#research2 > span').style.minWidth = '';
+//                getQuery('#researchExtra1 > span').style.minWidth = '';
 
                 specialHTML.lastUpgrade = upgradesInfo.maxActive;
                 const upgradeHTML = specialHTML.upgradeHTML[active];
@@ -993,7 +993,7 @@ export const visualUpdate = (ignoreOffline = false) => {
                     const img = button.querySelector('img') as HTMLImageElement;
                     if (img) {
                         img.src = `Used_art/${upgradeHTML[i]}`;
-                        img.alt = upgradesInfo.name[i];
+//                        img.alt = upgradesInfo.name[i];
                     }
                 }
 
@@ -1003,9 +1003,9 @@ export const visualUpdate = (ignoreOffline = false) => {
                     const main = getId(`research${i + 1}`);
                     if (showR.includes(i)) { main.style.display = ''; }
                     main.className = researchHTML[i][1];
-                    const image = getQuery(`#research${i + 1} > input`) as HTMLInputElement;
-                    image.src = `Used_art/${researchHTML[i][0]}`;
-                    image.alt = researchesInfo.name[i];
+//                    const image = getQuery(`#research${i + 1} > input`) as HTMLInputElement;
+//                    image.src = `Used_art/${researchHTML[i][0]}`;
+//                    image.alt = researchesInfo.name[i];
                 }
 
                 specialHTML.lastResearchExtra = researchesExtraInfo.maxActive;
@@ -1014,15 +1014,11 @@ export const visualUpdate = (ignoreOffline = false) => {
                     const main = getId(`researchExtra${i + 1}`);
                     if (showE.includes(i)) { main.style.display = ''; }
                     main.className = researchExtraHTML[i][1];
-                    const image = getQuery(`#researchExtra${i + 1} > input`) as HTMLInputElement;
-                    image.src = `Used_art/${researchExtraHTML[i][0]}`;
-                    image.alt = researchesExtraInfo.name[i];
+//                    const image = getQuery(`#researchExtra${i + 1} > input`) as HTMLInputElement;
+//                    image.src = `Used_art/${researchExtraHTML[i][0]}`;
+//                    image.alt = researchesExtraInfo.name[i];
                 }
                 getQuery('#extraResearches > div').className = `researchesDiv ${researchExtraDivHTML[1]}`;
-                const extraImgId = getQuery('#extraResearches > img') as HTMLImageElement;
-                extraImgId.src = `Used_art/${researchExtraDivHTML[0]}`;
-                extraImgId.dataset.title = `${researchExtraDivHTML[2]} Researches (Special)`;
-
                 global.debug.visited.upgrade = true;
                 if (highest < 17) { getId('researches').style.display = ''; }
                 if (globalSave.SRSettings[0]) { getId('extraResearches').ariaLabel = `${researchExtraDivHTML[2]} Researches (Special)`; }
@@ -2043,6 +2039,7 @@ const visualUpdateResearches = (index: number, stageIndex: number, type: 'resear
 
         textPointer = `#inflation${index + 1}Tree${stageIndex + 1}`;
     }
+/*
 
     let text = '<span class="';
     if (level >= max) {
@@ -2059,7 +2056,7 @@ const visualUpdateResearches = (index: number, stageIndex: number, type: 'resear
     if (assignInnerHTML(mainHTML, text)) {
         mainHTML.classList[max < 1e3 ? 'remove' : 'add']('noMaxLevel');
     }
-
+*/
 };
 
 const updateRankInfo = () => {

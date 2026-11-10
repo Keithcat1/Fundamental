@@ -971,9 +971,9 @@ try { //Start everything
         }
     });
     for (let i = 1; i <= 3; i++) { observerX.observe(getQuery(`#special${i} > p`)); }
-    observerX.observe(getQuery('#research1 > span'));
-    observerX.observe(getQuery('#research2 > span'));
-    observerX.observe(getQuery('#researchExtra1 > span'));
+//    observerX.observe(getQuery('#research1 > span'));
+//    observerX.observe(getQuery('#research2 > span'));
+//    observerX.observe(getQuery('#researchExtra1 > span'));
     const observerY = new ResizeObserver((entries) => {
         for (const entry of entries) {
             const target = entry.target as HTMLElement;
@@ -1283,45 +1283,19 @@ try { //Start everything
 
     /* Upgrade tab */
     for (let i = 0; i < specialHTML.lastUpgrade; i++) {
-        const image = getId(`upgrade${i + 1}`);
-        const hoverFunc = () => hoverUpgrades(i, 'upgrades');
+        const label = getId(`upgrade${i + 1}`);
         const clickFunc = () => buyUpgrades(i, player.stage.active, 'upgrades');
-        if (PC) {
-            image.addEventListener('mouseenter', () => {
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
-        }
         if (MD) {
-            image.addEventListener('touchstart', () => {
-                hoverFunc();
-                if (player.toggles.hover[0]) {
-                    clickFunc();
-                    repeatFunction(clickFunc);
-                }
-            });
         } else {
-            image.addEventListener('click', clickFunc);
-            image.addEventListener('mousedown', () => repeatFunction(clickFunc));
-        }
-        if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
+            label.addEventListener('click', clickFunc);
         }
     }
     for (let i = 0; i < specialHTML.lastResearch; i++) {
         const label = getId(`research${i + 1}`);
-        const image = getQuery(`#research${i + 1} > input`);
         const hoverFunc = () => hoverUpgrades(i, 'researches');
         const clickFunc = () => buyUpgrades(i, player.stage.active, 'researches');
         if (PC) {
             label.addEventListener('mouseenter', hoverFunc);
-            image.addEventListener('mouseenter', () => {
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
         }
         if (MD) {
             label.addEventListener('touchstart', () => {
@@ -1333,26 +1307,15 @@ try { //Start everything
             });
         } else {
             label.addEventListener('mousedown', () => repeatFunction(clickFunc));
-            image.addEventListener('click', clickFunc);
-        }
-        if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
+            label.addEventListener('click', clickFunc);
         }
     }
     for (let i = 0; i < specialHTML.lastResearchExtra; i++) {
         const label = getId(`researchExtra${i + 1}`);
-        const image = getQuery(`#researchExtra${i + 1} > input`);
         const hoverFunc = () => hoverUpgrades(i, 'researchesExtra');
         const clickFunc = () => buyUpgrades(i, player.stage.active, 'researchesExtra');
         if (PC) {
             label.addEventListener('mouseenter', hoverFunc);
-            image.addEventListener('mouseenter', () => {
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
         }
         if (MD) {
             label.addEventListener('touchstart', () => {
@@ -1364,26 +1327,15 @@ try { //Start everything
             });
         } else {
             label.addEventListener('mousedown', () => repeatFunction(clickFunc));
-            image.addEventListener('click', clickFunc);
-        }
-        if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
+            label.addEventListener("click", clickFunc);
         }
     }
     for (let i = 0; i < playerStart.researchesAuto.length; i++) {
         const label = getId(`researchAuto${i + 1}`);
-        const image = getQuery(`#researchAuto${i + 1} > input`);
         const hoverFunc = () => hoverUpgrades(i, 'researchesAuto');
         const clickFunc = () => handleAutoResearchCreation(i);
         if (PC) {
             label.addEventListener('mouseenter', hoverFunc);
-            image.addEventListener('mouseenter', () => {
-                if (player.toggles.hover[0]) { buyUpgrades(i, player.stage.active, 'researchesAuto'); }
-            });
         }
         if (MD) {
             label.addEventListener('touchstart', () => {
@@ -1395,25 +1347,16 @@ try { //Start everything
             });
         } else {
             label.addEventListener('mousedown', () => repeatFunction(clickFunc));
-            image.addEventListener('click', clickFunc);
+            label.addEventListener("click", clickFunc);
         }
-        if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { buyUpgrades(i, player.stage.active, 'researchesAuto'); }
-            });
-        }
-    } {
+    }
+    {
         const label = getId('ASR');
-        const image = getQuery('#ASR > input');
         const hoverFunc = () => hoverUpgrades(0, 'ASR');
         const clickFunc = () => buyUpgrades(0, player.stage.active, 'ASR');
         if (PC) {
             label.addEventListener('mouseenter', hoverFunc);
-            image.addEventListener('mouseenter', () => {
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
+            label.addEventListener("click", clickFunc);
         }
         if (MD) {
             label.addEventListener('touchstart', () => {
@@ -1425,14 +1368,6 @@ try { //Start everything
             });
         } else {
             label.addEventListener('mousedown', () => repeatFunction(clickFunc));
-            image.addEventListener('click', clickFunc);
-        }
-        if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
-                hoverFunc();
-                if (player.toggles.hover[0]) { clickFunc(); }
-            });
         }
     }
     if (MD) {
