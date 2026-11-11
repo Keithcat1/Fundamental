@@ -487,7 +487,6 @@ const hoverStrangeness = (index: number, stageIndex: number, type: 'strangeness'
         global.lastStrangeness = [index, stageIndex];
     } else { global.lastMilestone = [index, stageIndex]; }
     getUpgradeDescription(type);
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = getId(`${type}Text`).innerText.replace('Type: ', '').replaceAll('\n\n', ' '); }
 };
 const hoverChallenge = (index: number) => {
     global.lastChallenge[0] = index;
@@ -1274,8 +1273,7 @@ try { //Start everything
         };
         image.addEventListener('mouseenter', clickFunc);
         if (PC || SR) {
-            image.addEventListener('focus', () => {
-                if (!global.hotkeys.tab) { return; }
+            image.addEventListener('click', () => {
                 clickFunc();
             });
         }
