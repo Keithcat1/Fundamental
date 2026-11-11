@@ -156,14 +156,14 @@ export const simulateOffline = async(offline: number, autoConfirm = globalSave.t
         control.abort();
         mainHTML.style.display = 'none';
         oldFocus?.focus();
-        if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Offline calculation ended'; }
+        if (globalSave.SRSettings[0]) { srAnnounce('Offline calculation ended'); }
 
         if (info.autosave) {
             info.autosave = false;
             saveGame(false, true);
         }
     };
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Offline calculation started'; }
+    if (globalSave.SRSettings[0]) {  srAnnounce('Offline calculation started'); }
     mainHTML.style.display = '';
     accelBtn.focus();
 
@@ -213,7 +213,7 @@ export const pauseGame = (pause = true) => {
         button.style.color = '';
         getId('gamePaused').style.display = 'none';
         global.paused = false;
-        if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Unpaused'; }
+        if (globalSave.SRSettings[0]) { srAnnounce('Unpaused'); }
 
         global.intervalsId.autoSave = globalSave.intervals.autoSave > 0 ? setInterval(saveGame, globalSave.intervals.autoSave) : undefined;
     }
@@ -236,7 +236,7 @@ export const pauseGameUser = () => {
         global.paused = true;
         changeIntervals();
         clearInterval(global.intervalsId.autoSave);
-        if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'paused'; }
+        if (globalSave.SRSettings[0]) { srAnnounce('paused'); }
         return;
     }
     const offline = handleOfflineTime();
@@ -396,7 +396,7 @@ export const toggleSwap = (number: number, type: 'buildings' | 'verses' | 'norma
     } else if (type === 'auto') {
         toggleHTML = getId(`toggleAuto${number}`);
         extraText = 'Auto ';
-        if (change && globalSave.SRSettings[0]) { getId('SRMain').textContent = toggles[number] ? "On" : "Off"; }
+        if (change && globalSave.SRSettings[0]) { srAnnounce(toggles[number] ? "On" : "Off", true); }
     } else {
         toggleHTML = getId(`toggleNormal${number}`);
         extraText = '';
@@ -478,7 +478,6 @@ const hoverUpgrades = (index: number, type: 'upgrades' | 'researches' | 'researc
         global.lastUpgrade[player.stage.active] = [index, type];
     }
     getUpgradeDescription(type);
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = getId(`${type === 'elements' ? type : 'upgrades'}Text`).innerText.replace('Type: ', '').replaceAll('\n\n', ' '); }
 };
 const hoverStrangeness = (index: number, stageIndex: number, type: 'strangeness' | 'milestones' | 'inflation') => {
     if (type === 'inflation') {
@@ -575,7 +574,7 @@ export const loadoutsLoad = async(loadout: number[], noConfirmation = true) => {
         buyStrangeness(loadout[i], 0, 'inflation', true);
     }
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Loaded loadout'; }
+    if (globalSave.SRSettings[0]) { srAnnounce('Loaded loadout'); }
 };
 const loadoutsLoadAuto = () => {
     const array = [];
@@ -1455,7 +1454,7 @@ try { //Start everything
 
     /* Strangeness tab */
     for (let i = 0; i < playerStart.strange.length; i++) {
-        const button = getId(`strange${i}`);
+//        const button = getId(`strange${i}`);
 //            numbersUpdate();
 //            visualUpdate();
     }
@@ -2230,4 +2229,11 @@ try { //Start everything
         void Alert('Awaiting game reload');
     });
     throw error;
+}
+export function srAnnounce(message: string, notify: bool = false) {
+    if (notify) {
+        (document as any).ariaNotify(message);
+    } else {
+        getId("SRMain").textContent = message;
+    }
 }

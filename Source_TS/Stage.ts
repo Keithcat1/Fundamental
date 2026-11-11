@@ -1,6 +1,6 @@
 import { allowedToEnter, checkBuilding, checkUpgrade, checkVerse, milestoneCheck, stageResetType } from './Check';
 import Overlimit, { compareFunc } from './Limit';
-import { cloneArray, getId, loadoutsFinal, playerStart, simulateOffline } from './Main';
+import { cloneArray, getId, loadoutsFinal, playerStart, simulateOffline, srAnnounce } from './Main';
 import { effectsCache, global, player, prepareVacuum } from './Player';
 import { cloneBeforeReset, loadFromClone, reset, resetDarkness, resetStage, resetVacuum } from './Reset';
 import { Confirm, Notify, enterQuantum, enterUltravoid, errorNotify, globalSave, specialHTML } from './Special';
@@ -1179,7 +1179,7 @@ export const buyBuilding = (index: number, stageIndex: number, howMany = player.
 
         if (!auto) {
             numbersUpdate();
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `Made ${format(afford)} '${global.buildingsInfo.name[stageIndex][index]}'`; }
+            if (globalSave.SRSettings[0]) { srAnnounce(`Made ${format(afford)} '${global.buildingsInfo.name[stageIndex][index]}'`); }
         }
     } else /*if (stageIndex === 5 && index === 3)*/ {
         global.mergeInfo.galaxies += afford;
@@ -1193,7 +1193,7 @@ export const buyBuilding = (index: number, stageIndex: number, howMany = player.
         awardMilestone(1, 5);
         if (!auto) {
             numbersUpdate();
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Galaxies reset'; }
+            if (globalSave.SRSettings[0]) { srAnnounce('+${afford} Galaxies', true); }
         }
     }
 };
@@ -1270,8 +1270,8 @@ export const buyVerse = (index: number, auto = false): boolean => {
     if (!checkVerse(index) || calculateVerseCost(index) > (index === 0 ? global.mergeInfo.score : global.versesInfo.types)) { return false; }
 
     const verse = player.verses[index as 0];
+    const which = player.challenges.active === 0 ? (player.toggles.supervoid ? 3 : 2) : (player.inflation.vacuum ? 0 : 1);
     if (index === 0) {
-        const which = player.challenges.active === 0 ? (player.toggles.supervoid ? 3 : 2) : (player.inflation.vacuum ? 0 : 1);
         if (verse.true[which] === 0) { global.versesInfo.types++; }
         global.versesInfo.true++;
         verse.true[which]++;
@@ -1296,8 +1296,9 @@ export const buyVerse = (index: number, auto = false): boolean => {
         player.clone = {};
         if ((player.toggles.normal[0] && !player.inflation.vacuum) || player.stage.active < 6) { setActiveStage(1); }
         resetVacuum(1);
+        if (!auto && globalSave.SRSettings[0]) { srAnnounce(`+${income} inflatons +1 ${which === 0 ? "False" : which === 1 ? "True" : "void"} Universe`, true); }
     } else { endReset(true); }
-    if (!auto && globalSave.SRSettings[0]) { getId('SRMain').textContent = `${index === 0 ? 'Universe' : 'Multiverse'} reset`; }
+    if (!auto && globalSave.SRSettings[0]) { srAnnounce(`Multiverse reset`, true); }
     return true;
 };
 
@@ -1455,7 +1456,7 @@ export const buyUpgrades = (upgrade: number, stageIndex: number, type: 'upgrades
         }
         if (!auto) {
             global.automatization.autoU[stageIndex] = [];
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `'${pointer.name[upgrade]}' created`; }
+            if (globalSave.SRSettings[0]) { srAnnounce(`'${pointer.name[upgrade]}' created`); }
         }
     } else if (type === 'researches' || type === 'researchesExtra') {
         const pointer = global[`${type}Info`][stageIndex];
@@ -1550,7 +1551,7 @@ export const buyUpgrades = (upgrade: number, stageIndex: number, type: 'upgrades
         assignUpgradeCost(upgrade, stageIndex, type);
         if (!auto) {
             global.automatization[type === 'researches' ? 'autoR' : 'autoE'][stageIndex] = [];
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${level[upgrade] >= pointer.max[upgrade] ? 'maxed ' : ''}${pointer.name[upgrade]} + 1 to ${format(level[upgrade])}`; }
+            if (globalSave.SRSettings[0]) {  srAnnounce(`${level[upgrade] >= pointer.max[upgrade] ? 'maxed ' : ''}${pointer.name[upgrade]} + 1 to ${format(level[upgrade])}`); }
         }
     } else if (type === 'researchesAuto' || type === 'ASR') {
         if (type === 'ASR') { upgrade = stageIndex; }
@@ -1590,7 +1591,7 @@ export const buyUpgrades = (upgrade: number, stageIndex: number, type: 'upgrades
                 }
             }
         }
-if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${level[upgrade] >= pointer.max[upgrade] ? 'maxed ' : ''}${pointer.name[upgrade]} + 1 to ${format(level[upgrade])}`; }
+if (globalSave.SRSettings[0]) { srAnnounce(`${level[upgrade] >= pointer.max[upgrade] ? 'maxed ' : ''}${pointer.name[upgrade]} + 1 to ${format(level[upgrade])}`); }
     } else if (type === 'elements') {
         let level = player.elements[upgrade];
 
@@ -1631,7 +1632,7 @@ if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${level[upgrade] 
                 assignMaxLevel(3, 5, 'researchesExtra', true);
             }
         }
-        if (!auto && globalSave.SRSettings[0]) { getId('SRMain').textContent = `'${global.elementsInfo.name[upgrade]}' ${player.elements[upgrade] >= 1 ? 'obtained' : 'awaiting activation'}`; }
+        if (!auto && globalSave.SRSettings[0]) { srAnnounce(`'${global.elementsInfo.name[upgrade]}' ${player.elements[upgrade] >= 1 ? 'obtained' : 'awaiting activation'}`); }
     }
 
     if (!free) {
@@ -1812,7 +1813,7 @@ export const buyStrangeness = (upgrade: number, stageIndex: number, type: 'stran
         } else if (player.verses[0].current < 13) { assignBuildingsProduction.strange0(); }
         if (!auto) {
             global.automatization.autoS = [];
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${strangeness[upgrade] >= pointer.max[upgrade] ? 'maxed ' : ''}${pointer.name[upgrade]} ${format(strangeness[upgrade])} + 1 level in ${global.stageInfo.word[stageIndex]}`; }
+            if (globalSave.SRSettings[0]) { srAnnounce(`${strangeness[upgrade] >= pointer.max[upgrade] ? 'maxed ' : ''}${pointer.name[upgrade]} ${format(strangeness[upgrade])} + 1 level in ${global.stageInfo.word[stageIndex]}`); }
         }
     } else if (type === 'inflation') {
         const pointer = global.treeInfo[stageIndex];
@@ -1878,7 +1879,7 @@ export const buyStrangeness = (upgrade: number, stageIndex: number, type: 'stran
         }
         assignUpgradeCost(upgrade, stageIndex, 'inflation');
         if (!auto) {
-            if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `Level increased ${tree[upgrade] >= pointer.max[upgrade] ? 'and maxed at' : 'to'} ${format(tree[upgrade])} for the '${pointer.name[upgrade]}' Inflation`; }
+            if (globalSave.SRSettings[0]) { srAnnounce(`Level increased ${tree[upgrade] >= pointer.max[upgrade] ? 'and maxed at' : 'to'} ${format(tree[upgrade])} for the '${pointer.name[upgrade]}' Inflation`); }
         }
     }
 
@@ -1897,6 +1898,7 @@ export const inflationRefund = async(noConfirmation = false, loadout = false): P
     stageFullReset();
     if (challenge !== null) { challengeReset(challenge); }
 
+    const gain = inflaton.total - inflaton.current;
     inflaton.current = inflaton.total;
     for (let i = 0; i < playerStart.tree[0].length; i++) {
         player.tree[0][i] = 0;
@@ -1913,7 +1915,7 @@ export const inflationRefund = async(noConfirmation = false, loadout = false): P
     if (!loadout) {
         numbersUpdate();
         loadoutsFinal([]);
-        if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Inflatons have been refunded'; }
+        if (globalSave.SRSettings[0]) { srAnnounce(`+${gain} inflatons, refunded`); }
     }
     return true;
 };
@@ -2460,7 +2462,7 @@ export const endResetUser = async() => {
         }
     }
 
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `+${calculateEffects.cosmonGain()} Cosmons`; }
+    if (globalSave.SRSettings[0]) { srAnnounce(`+${calculateEffects.cosmonGain()} Cosmons`, true); }
     endReset();
     numbersUpdate();
 };
@@ -2593,7 +2595,7 @@ export const stageResetUser = async() => {
     if (globalSave.SRSettings[0]) {
         const quarks = calculateQuarksGain();
         if(quarks > 0) {
-            getId('SRMain').textContent = `+${format(quarks)} strange quarks`;
+            srAnnounce(`+${format(quarks)} strange quarks`, true);
         }
     }
     stageResetReward(active);
@@ -2813,7 +2815,7 @@ const dischargeReset = (user = false) => {
     }
     if(user) srArray.push(`${global.dischargeInfo.energyTrue - player.discharge.energy} energy restored`);
     awardVoidReward(1);
-    if (user && globalSave.SRSettings[0]) { getId('SRMain').textContent = srArray.join(", "); }
+    if (user && globalSave.SRSettings[0]) { srAnnounce(srArray.join(", "), true); }
 
     reset('discharge', player.challenges.active === 0 ? (player.tree[1][5] >= 4 ? [1, 3, 4, 5] : [1, 2, 3, 4, 5]) : [1]);
 };
@@ -2867,7 +2869,7 @@ export const vaporizationResetUser = async() => {
 
     vaporizationReset();
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${format(totalBoost)}X Vaporized`; }
+    if (globalSave.SRSettings[0]) { srAnnounce(`${format(totalBoost)}X Vaporized`, true); }
 };
 
 const vaporizationReset = (autoClouds = null as number | null) => {
@@ -2925,7 +2927,7 @@ export const rankResetUser = async() => {
     rankReset(player.accretion.rank === 0);
     numbersUpdate();
     if (player.stage.active === 3) { visualUpdate(); }
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${global.accretionInfo.rankName[player.accretion.rank]} rank`; }
+    if (globalSave.SRSettings[0]) { srAnnounce(`${global.accretionInfo.rankName[player.accretion.rank]} rank`); }
 };
 
 const rankReset = (noReset = false) => {
@@ -3054,7 +3056,7 @@ export const collapseResetUser = async() => {
 
     collapseReset();
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = `${format(global.collapseInfo.newMass)} solar mass`; }
+    if (globalSave.SRSettings[0]) { srAnnounce(`${format(global.collapseInfo.newMass)} solar mass`); }
 };
 
 const collapseReset = () => {
@@ -3148,10 +3150,13 @@ export const mergeResetUser = async() => {
             if (!mergeResetCheck()) { return Notify('Merge canceled, requirements are no longer met'); }
         }
     }
+    const [groups, clusters] = global.mergeInfo.checkReward;
+    const inflatons = player.cosmon[0].total;
+    const galaxies = player.buildings[5][3].true;
 
     mergeReset(!stable);
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = stable ? 'Merged Galaxies' : 'Decayed Vacuum'; }
+    if (globalSave.SRSettings[0]) { srAnnounce(stable ? `+${galaxies} merged galaxies${groups > 0 ? ` +${groups} groups` : ``}${clusters > 0 ? ` +${clusters} clusters` : ``}` : `${player.cosmon[0].total > inflatons ? `+${player.cosmon[0].total - inflatons} inflatons, ` : ""}Decayed Vacuum`, true); }
 };
 
 const mergeReset = (vacuumChange = false) => {
@@ -3233,7 +3238,7 @@ export const nucleationResetUser = async() => {
 
     nucleationReset();
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { getId('SRMain').textContent = 'Caused Nucleation reset'; }
+    if (globalSave.SRSettings[0]) { srAnnounce(`${global.inflationInfo.newFluid} dark fluid`, true); }
 };
 
 const nucleationReset = () => {
