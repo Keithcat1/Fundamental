@@ -1670,7 +1670,7 @@ export const visualProgressUnlocks = () => {
 
 export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researchesExtra' | 'researchesAuto' | 'ASR' | 'elements' | 'strangeness' | 'milestones' | 'inflation') => {
     if (type === 'inflation') {
-        for(let stageIndex = 0; stageIndex <= 1; stageIndex ++) {
+        for(let stageIndex = 0; stageIndex < global.treeInfo.length; stageIndex ++) {
             for(let index = 0; index < global.treeInfo[stageIndex].name.length; index ++ ) {
                 const pointer = global.treeInfo[stageIndex];
                 const level = player.tree[stageIndex][index];
@@ -1691,7 +1691,7 @@ export const getUpgradeDescription = (type: 'upgrades' | 'researches' | 'researc
                             newLevel++;
                         }
                     }
-                    inflationCost = `${cost === 0 ? 'None' : `${format(cost)} ${stageIndex === 0 ? 'Inflatons' : 'Cosmons'}`}${stageIndex !== 0 ? ', non-refundable' : ''}.${newLevel - level > 1 ? ` [x${newLevel - level}]` : ''}`;
+                    inflationCost = `${format(cost)} ${global.inflationInfo.name[stageIndex]}.${stageIndex === 2 ? ` (Resets all ${global.inflationInfo.name[stageIndex]})` : newLevel - level > 1 ? ` [x${newLevel - level}]` : ''}`;
                 }
                 const html = getId(`inflation${index+1}Tree${stageIndex+1}`);
                 html.innerHTML = `${inflationText}<br>${inflationCost}<br>${inflationEffect}`;
