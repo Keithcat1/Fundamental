@@ -42,6 +42,7 @@ export const getId = (id: string, noError = false): HTMLElement => {
 
     if (noError) { return null as unknown as HTMLElement; }
     errorNotify(`Error encountered, ID ‒ '${id}' doesn't exist`);
+    console.trace();
     throw new ReferenceError(`ID ‒ '${id}' doesn't exist`);
 };
 
@@ -1522,6 +1523,7 @@ try { //Start everything
     */
     /* Inflation tab */
     {
+/*
         const button = getId('cosmon2');
         const open = (focus = false) => {
             const window = getId('cosmon2InfoMain');
@@ -1543,6 +1545,7 @@ try { //Start everything
         };
         button.addEventListener('mouseenter', () => open());
         if (SR) { button.addEventListener('focus', () => open(true)); }
+*/
     }
     for (let s = 0; s < playerStart.tree.length; s++) {
         for (let i = 0; i < playerStart.tree[s].length; i++) {

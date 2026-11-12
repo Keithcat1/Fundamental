@@ -848,40 +848,9 @@
                         <p id="cosmonGain">Cosmons gain on End reset: <span class="whiteText">1</span> | End timer: <span id="endTime" class="whiteText">0</span></p>
                         <p id="cosmonRate">Cosmons rate: <span class="whiteText">0 per second</span> (Peak: <span id="cosmonPeak" class="whiteText">0 per second</span> | At: <span id="cosmonPeakAt" class="whiteText">0 seconds</span>)</p>
                     </div>
-                    <article id="abyssResources" class="darkvioletText" aria-label="Abyss resources">
-                        <section id="cosmon0">
-                            <h3>Inflatons</h3>
-                            <div>
-                                <img src="Used_art/Inflaton.png" alt="" loading="lazy" draggable="false">
-                                <p>0</p>
-                            </div>
-                        </section>
-                        <section id="cosmon1">
-                            <h3>Cosmons</h3>
-                            <div>
-                                <img src="Used_art/Cosmon.png" alt="" loading="lazy" draggable="false">
-                                <p>0</p>
-                            </div>
-                        </section>
-                        <section id="cosmon2">
-                            <h3>Tachyons</h3>
-                            <div>
-                                <img src="Used_art/Tachyon.png" alt="" loading="lazy" draggable="false">
-                                <p>0</p>
-                            </div>
-                            <div id="cosmon2InfoMain" class="popUpMenu mainText" style="display: none;" role="dialog">
-                                <h4 class="bigWord">Tachyon softcap information:</h4>
-                                <ul class="whiteText">
-                                    <li>Softcap ^<span id="cosmon2InfoSoft">0.8</span> starts at 600 seconds of pre-softcap production</li>
-                                    <li>Which is equal to <span id="cosmon2InfoStart">1</span> | Pre-softcap production is <span id="cosmon2InfoPre">1</span></li>
-                                    <li>Post softcap production is <span id="cosmon2InfoPost">1</span></li>
-                                </ul>
-                            </div>
-                        </section>
-                    </article>
-                    <h2 class="darkvioletText bigWord">Inflations</h2>
                     <article id="inflation" aria-label="Inflations">
-                        <section id="inflationTree1" class="researchesDiv" aria-label="Inflatons">
+                        <div id="inflationTree1" class="researchesDiv">
+                            <h3 id="cosmon0Count"></h3>
                             <button id="inflation1Tree1" class="whiteText stage1borderImage">
                             </button>
                             <button id="inflation2Tree1" class="whiteText stage4borderImage">
@@ -898,8 +867,9 @@
                             </button>
                             <button id="inflation8Tree1" class="whiteText stage5borderImage">
                             </button>
-                        </section>
-                        <section id="inflationTree2" class="researchesDiv" aria-label="Cosmons">
+                        </div>
+                        <div id="inflationTree2" class="researchesDiv">
+                            <h3 id="cosmon1Count"></h3>
                             <button id="inflation1Tree2" class="whiteText stage4borderImage">
                             </button>
                             <button id="inflation2Tree2" class="whiteText greenBorderImage">
@@ -918,15 +888,24 @@
                             </button>
                             <button id="inflation9Tree2" class="whiteText stage2borderImage"></button>
                             <button id="inflation10Tree2" class="whiteText stage2borderImage"></button>
-                        </section>
-                        <section id="inflationTree3" class="researchesDiv" aria-label="Tachyon">
+                        </div>
+                        <div id="inflationTree3" class="researchesDiv">
+                            <h3 id="cosmon2Count"></h3>
                             <button id="inflation1Tree3" class="whiteText stage2borderImage"></button>
                             <button id="inflation2Tree3" class="whiteText stage2borderImage"></button>
                             <button id="inflation3Tree3" class="whiteText stage2borderImage"></button>
                             <button id="inflation4Tree3" class="whiteText stage2borderImage"></button>
                             <button id="inflation5Tree3" class="whiteText stage2borderImage"></button>
-                        </section>
+                        </div>
                     </article>
+                    <div id="cosmon2InfoMain" class="mainText">
+                        <h4 class="bigWord">Tachyon softcap information:</h4>
+                        <ul class="whiteText">
+                            <li>Softcap ^<span id="cosmon2InfoSoft">0.8</span> starts at 600 seconds of pre-softcap production</li>
+                            <li>Which is equal to <span id="cosmon2InfoStart">1</span> | Pre-softcap production is <span id="cosmon2InfoPre">1</span></li>
+                            <li>Post softcap production is <span id="cosmon2InfoPost">1</span></li>
+                        </ul>
+                    </div>
                     <div class="descriptionTextMain">
                         <div>
                             <button type="button" id="inflationRefund" class="hollowButton">Refund</button>

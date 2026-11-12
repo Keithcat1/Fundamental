@@ -505,9 +505,9 @@ export const numbersUpdate = (ignoreOffline = false) => {
                 if (current >= softcap) { production = ((current / softcap) ** 1.25 + production / softcap) ** 0.8 * softcap - current; }
                 getId('cosmon2InfoPost').textContent = format(production, { padding: true });
             }
-            getQuery('#cosmon0 p').textContent = format(player.cosmon[0].current, { padding: 'exponent' });
-            getQuery('#cosmon1 p').textContent = format(player.cosmon[1].current, { padding: true });
-            getQuery('#cosmon2 p').textContent = format(player.cosmon[2].current, { padding: true });
+            getId('cosmon0Count').textContent = `${format(player.cosmon[0].current, { padding: 'exponent' })} Inflatons`;
+            getId('cosmon1Count').textContent = `${format(player.cosmon[1].current, { padding: true })} Cosmons`;
+            getId('cosmon2Count').textContent = `${format(player.cosmon[2].current, { padding: true })} Tachyons`;
             getId('inflatonGainTrue').textContent = format((!vacuum && (player.tree[1][9] < 1 || challenge === 1) ? player.verses[0].true[0] : calculateEffects.trueVerses()) + 1, { padding: 'exponent' });
             getId('endTime').textContent = format(player.time.end, { type: 'time' });
             const cosmonGain = calculateEffects.cosmonGain();
@@ -1550,8 +1550,6 @@ export const visualProgressUnlocks = () => {
         getId('toggleMax1').style.display = highest >= 19 ? '' : 'none';
         getId('createAllStrangeness').style.display = highest >= 19 ? '' : 'none';
     } else { getId('strangenessToggles').style.display = highest >= 19 ? '' : 'none'; }
-    getId('cosmon1').style.display = highest >= 20 ? '' : 'none';
-    getId('cosmon2').style.display = highest >= 25 ? '' : 'none';
     getId('cosmonGain').style.display = highest >= 20 ? '' : 'none';
     getId('cosmonRate').style.display = highest >= 20 ? '' : 'none';
     getId('inflation4Tree1').style.display = highest >= 20 ? '' : 'none';
