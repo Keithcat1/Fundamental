@@ -1296,7 +1296,7 @@ export const buyVerse = (index: number, auto = false): boolean => {
         player.clone = {};
         if ((player.toggles.normal[0] && !player.inflation.vacuum) || player.stage.active < 6) { setActiveStage(1); }
         resetVacuum(1);
-        if (!auto && globalSave.SRSettings[0]) { srAnnounce(`+${income} inflatons +1 ${which === 0 ? "False" : which === 1 ? "True" : "void"} Universe`, true); }
+        if (!auto && globalSave.SRSettings[0]) { srAnnounce(`+${income} inflatons +1 ${which === 0 ? "True" : which === 1 ? "False" : "void"} Universe`, true); }
     } else { endReset(true); }
     if (!auto && globalSave.SRSettings[0]) { srAnnounce(`Multiverse reset`, true); }
     return true;
