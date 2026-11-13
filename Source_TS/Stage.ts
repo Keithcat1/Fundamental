@@ -1179,7 +1179,7 @@ export const buyBuilding = (index: number, stageIndex: number, howMany = player.
 
         if (!auto) {
             numbersUpdate();
-            if (globalSave.SRSettings[0]) { srAnnounce(`Made ${format(afford)} '${global.buildingsInfo.name[stageIndex][index]}'`); }
+            if (globalSave.SRSettings[0]) { srAnnounce(`Made ${format(afford)} '${global.buildingsInfo.name[stageIndex][index]}'`, true); }
         }
     } else /*if (stageIndex === 5 && index === 3)*/ {
         global.mergeInfo.galaxies += afford;
