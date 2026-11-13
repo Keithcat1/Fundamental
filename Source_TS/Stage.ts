@@ -3235,10 +3235,9 @@ export const nucleationResetUser = async() => {
             if (!nucleationResetCheck()) { return Notify('Nucleation canceled, requirements are no longer met'); }
         }
     }
-
+    if (globalSave.SRSettings[0]) { srAnnounce(`${global.inflationInfo.newFluid} dark fluid`, true); }
     nucleationReset();
     numbersUpdate();
-    if (globalSave.SRSettings[0]) { srAnnounce(`${global.inflationInfo.newFluid} dark fluid`, true); }
 };
 
 const nucleationReset = () => {
